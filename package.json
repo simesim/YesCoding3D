@@ -1,0 +1,14 @@
+{
+  "name": "yescoding3d",
+  "version": "1.0.0",
+  "description": "YesCoding3D — браузерный 3D-редактор (Three.js)",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.19.2"
+  }
+}

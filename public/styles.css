@@ -574,6 +574,40 @@ input {
 }
 @keyframes sp { to { transform: rotate(360deg); } }
 
+/* Экран фатальной ошибки (нет WebGL / сбой при запуске) */
+#fatal-error {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+#fatal-error.hidden { display: none; }
+.error-card {
+  max-width: 420px;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  color: var(--ink);
+  background: var(--panel);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+}
+.error-card h1 { font-size: 17px; color: var(--blue-d); margin-bottom: 10px; }
+.error-card p { font-size: 14px; line-height: 1.5; color: var(--gray); }
+.error-card button {
+  margin-top: 16px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
 /* Уважение к prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .spin { animation-duration: 2.5s; }

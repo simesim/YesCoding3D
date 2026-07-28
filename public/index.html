@@ -5,6 +5,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>YesCoding3D — 3D-редактор</title>
+  <meta name="description" content="YesCoding3D — браузерный 3D-редактор: собирайте модели из готовых фигур и текста, импортируйте и экспортируйте STL прямо в браузере.">
+  <meta name="theme-color" content="#4A90E2">
+  <meta name="robots" content="index,follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="YesCoding3D — 3D-редактор">
+  <meta property="og:description" content="Браузерный 3D-редактор: собирайте модели из готовых фигур и текста, импортируйте и экспортируйте STL.">
+  <meta property="og:locale" content="ru_RU">
+
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 
   <link rel="stylesheet" href="fonts.css">
 
@@ -117,10 +127,57 @@
         Собираю фигуры…
       </div>
     </div>
+
+    <!-- Экран фатальной ошибки: нет WebGL или сбой при запуске -->
+    <div id="fatal-error" class="hidden">
+      <div class="error-card">
+        <h1>Не удалось запустить редактор</h1>
+        <p id="fatal-error-text">Ваш браузер не поддерживает WebGL, необходимый для 3D-редактора. Попробуйте обновить браузер или открыть страницу в другом.</p>
+        <button onclick="location.reload()">Обновить страницу</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Основной скрипт приложения (Three.js + логика редактора) -->
-  <script src="app.js"></script>
+  <!-- Проверка WebGL и обработка фатальных ошибок до загрузки основного скрипта -->
+  <script>
+    (function () {
+      function showFatal(message) {
+        document.getElementById("loading").classList.add("hidden");
+        var el = document.getElementById("fatal-error");
+        if (message) document.getElementById("fatal-error-text").textContent = message;
+        el.classList.remove("hidden");
+      }
+
+      function hasWebGL() {
+        try {
+          var canvas = document.createElement("canvas");
+          return !!(window.WebGLRenderingContext &&
+            (canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+        } catch (e) {
+          return false;
+        }
+      }
+
+      if (!hasWebGL()) {
+        showFatal("Ваш браузер не поддерживает WebGL, необходимый для 3D-редактора. Попробуйте обновить браузер или открыть страницу в другом.");
+        return;
+      }
+
+      window.addEventListener("error", function (e) {
+        showFatal("Произошла непредвиденная ошибка, и редактор не может продолжить работу. Попробуйте обновить страницу.");
+      });
+      window.addEventListener("unhandledrejection", function (e) {
+        showFatal("Произошла непредвиденная ошибка, и редактор не может продолжить работу. Попробуйте обновить страницу.");
+      });
+
+      var script = document.createElement("script");
+      script.src = "./app.js";
+      script.onerror = function () {
+        showFatal("Не удалось загрузить редактор. Проверьте подключение к интернету и обновите страницу.");
+      };
+      document.body.appendChild(script);
+    })();
+  </script>
 </body>
 
 </html>
