@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>YesCoding3D — 3D-редактор</title>
+
+  <link rel="stylesheet" href="fonts.css">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div id="app">
+
+    <!-- Верхняя панель инструментов -->
+    <header id="topbar">
+
+      <!-- Логотип -->
+      <div class="logo">
+        <svg class="logo-cube" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 2 29 9.5v13L16 30 3 22.5v-13z" fill="#4A90E2" />
+          <path d="M16 2 29 9.5 16 17 3 9.5z" fill="#8BB9EE" />
+          <path d="M16 17v13L3 22.5v-13z" fill="#3B79C4" />
+        </svg>
+        <span class="logo-text"><b>Yes</b><i>Coding</i><em>3D</em></span>
+      </div>
+
+      <!-- Новый / загрузка STL / экспорт STL -->
+      <div class="tb-group">
+        <button id="btn-new" class="tb" title="Новый проект"><img src="./icons/new.png" class="iconsImage" alt="">Новый</button>
+        <button id="btn-import" class="tb" title="Загрузить STL (Ctrl+O)"><img src="./icons/import.png" class="iconsImage" alt="">Загрузить</button>
+        <button id="btn-export" class="tb tb-primary" title="Экспорт STL (Ctrl+E)"><img src="./icons/export.png" class="iconsImage" alt="">Экспорт STL</button>
+      </div>
+      <!-- Скрытый input для выбора .stl файла -->
+      <input type="file" id="stl-input" accept=".stl,model/stl,application/sla" hidden>
+      <span class="tb-sep"></span>
+
+      <!-- Отмена / повтор -->
+      <div class="tb-group">
+        <button id="btn-undo" class="tb tb-icon" title="Отменить (Ctrl+Z)"><img src="./icons/cancel.png" class="iconsImage"></button>
+        <button id="btn-redo" class="tb tb-icon" title="Вернуть (Ctrl+Shift+Z)"><img src="./icons/return.png" class="iconsImage"></button>
+      </div>
+      <span class="tb-sep"></span>
+
+      <!-- Копия / удаление -->
+      <div class="tb-group">
+        <button id="btn-dup" class="tb" title="Дублировать (Ctrl+D)"><img src="./icons/dublicate.png" class="iconsImage">Дубликат</button>
+        <button id="btn-del" class="tb" title="Удалить (Delete)"><img src="./icons/delete.png" class="iconsImage">Удалить</button>
+      </div>
+      <span class="tb-sep"></span>
+
+      <!-- Группировка / разгруппировка -->
+      <div class="tb-group">
+        <button id="btn-group" class="tb tb-primary" title="Сгруппировать (Ctrl+G)"><img src="./icons/group.png" class="iconsImage">Сгруппировать</button>
+        <button id="btn-ungroup" class="tb" title="Разгруппировать (Ctrl+Shift+G)"><img src="./icons/ungroup.png" class="iconsImage">Разобрать</button>
+      </div>
+      <span class="tb-sep"></span>
+
+      <!-- Режимы трансформации: двигать / вращать / масштаб -->
+      <div class="tb-group seg" id="mode-seg">
+        <button id="mode-move" class="tb seg-b on" title="Переместить (G)"><img src="./icons/move.png" class="iconsImage">Двигать</button>
+        <button id="mode-rotate" class="tb seg-b" title="Повернуть (R)"><img src="./icons/rotate.png" class="iconsImage">Вращать</button>
+        <button id="mode-scale" class="tb seg-b" title="Масштаб (S)"><img src="./icons/size.png" class="iconsImage">Размер</button>
+      </div>
+    </header>
+
+    <!-- Левая панель: библиотека фигур -->
+    <aside id="library">
+      <!-- Вкладки категорий (Стандарт / Формы / Декор / Буквы) -->
+      <div class="lib-tabs" id="lib-tabs"></div>
+      <!-- Сетка кнопок фигур или поле ввода текста -->
+      <div class="lib-body" id="lib-body"></div>
+    </aside>
+
+    <!-- Центральная область: 3D-сцена -->
+    <main id="viewport">
+      <!-- Canvas для WebGL-рендера -->
+      <canvas id="gl"></canvas>
+
+      <!-- Кнопки смены вида камеры -->
+      <div id="view-chips">
+        <button class="chip" data-view="iso">3D</button>
+        <button class="chip" data-view="top">Сверху</button>
+        <button class="chip" data-view="front">Спереди</button>
+        <button class="chip" data-view="side">Сбоку</button>
+      </div>
+
+      <!-- Подсказка при редактировании группы -->
+      <div id="edit-hint" class="hidden">Редактирование группы · <b>Esc</b> — собрать обратно</div>
+
+      <!-- Всплывающие сообщения (toast) -->
+      <div id="toast" class="hidden"></div>
+    </main>
+
+    <!-- Правая панель: параметры выбранного объекта -->
+    <aside id="inspector">
+      <div class="insp-head">Параметры</div>
+      <!-- Динамика  -->
+      <div id="insp-body"></div>
+    </aside>
+
+    <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
+    <footer id="statusbar">
+      <span><b>G</b> двигать</span><span><b>R</b> вращать</span><span><b>S</b> размер</span>
+      <span><b>D</b> на плоскость</span><span><b>Ctrl+O</b> загрузка</span><span><b>Ctrl+D</b> копия</span>
+      <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
+      <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
+    </footer>
+
+    <!-- Экран загрузки при старте -->
+    <div id="loading">
+      <div class="load-card">
+        <div class="spin"></div>
+        Собираю фигуры…
+      </div>
+    </div>
+  </div>
+
+  <!-- Основной скрипт приложения (Three.js + логика редактора) -->
+  <script src="app.js"></script>
+</body>
+
+</html>
