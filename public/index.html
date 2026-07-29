@@ -38,19 +38,17 @@
         <span class="logo-text"><b>Yes</b><i>Coding</i><em>3D</em></span>
       </div>
 
-      <!-- Новый / загрузка STL / экспорт STL -->
+      <!-- Новый проект + печать (STL для 3D-принтера) -->
       <div class="tb-group">
         <button id="btn-new" class="tb" title="Новый проект"><img src="./icons/new.png" class="iconsImage" alt="">Новый</button>
-        <button id="btn-import" class="tb" title="Загрузить STL (Ctrl+O)"><img src="./icons/import.png" class="iconsImage" alt="">STL</button>
-        <button id="btn-export" class="tb tb-primary" title="Экспорт STL (Ctrl+E)"><img src="./icons/export.png" class="iconsImage" alt="">STL</button>
+        <button id="btn-export" class="tb tb-primary" title="Печать — экспорт STL (Ctrl+E)"><img src="./icons/export.png" class="iconsImage" alt="">Печать</button>
       </div>
       <span class="tb-sep"></span>
-      <!-- Проект JSON: фигуры по отдельности -->
+      <!-- Проект JSON: фигуры по отдельности (основное сохранение) -->
       <div class="tb-group">
-        <button id="btn-save-json" class="tb" title="Сохранить проект (JSON)">Сохранить</button>
+        <button id="btn-save-json" class="tb" title="Сохранить проект (JSON, Ctrl+S)">Сохранить</button>
         <button id="btn-load-json" class="tb" title="Открыть проект (JSON)">Открыть</button>
       </div>
-      <input type="file" id="stl-input" accept=".stl,model/stl,application/sla" hidden>
       <input type="file" id="json-input" accept=".json,application/json" hidden>
       <span class="tb-sep"></span>
 
@@ -121,7 +119,7 @@
     <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
     <footer id="statusbar">
       <span><b>G</b> двигать</span><span><b>R</b> вращать</span><span><b>S</b> размер</span>
-      <span><b>D</b> на плоскость</span><span><b>Ctrl+O</b> STL</span><span><b>Ctrl+S</b> JSON</span><span><b>Ctrl+D</b> копия</span>
+      <span><b>D</b> на плоскость</span><span><b>Ctrl+S</b> сохранить</span><span><b>Ctrl+E</b> печать</span><span><b>Ctrl+D</b> копия</span>
       <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
       <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
     </footer>

@@ -4314,7 +4314,7 @@ bool _bvhIntersectFirstHit(
 		return geo;
 	}
 
-	/*   Загрузка STL-файла с диска  mesh на сцене (как обычная фигура)   */
+	/*   Загрузка STL-файла с диска mesh на сцене (как обычная фигура)   */
 	function loadSTLFile(file) {
 		if (!file) return;
 		let reader = new FileReader();
@@ -4363,13 +4363,8 @@ bool _bvhIntersectFirstHit(
 		e && loadProjectJSON(e);
 		n.target.value = "";
 	});
-	/*   Кнопка «Загрузить» открывает file input   */
-	Mt("btn-import").onclick = () => Mt("stl-input").click();
-	Mt("stl-input").addEventListener("change", n => {
-		let e = n.target.files && n.target.files[0];
-		e && loadSTLFile(e);
-		n.target.value = "";
-	}); Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-move").onclick = () => Mo("translate"); Mt("mode-rotate").onclick = () => Mo("rotate"); Mt("mode-scale").onclick = () => Mo("scale"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(), saveProjectJSON()) : t && n.code === "KeyO" ? (n.preventDefault(), Mt("stl-input").click()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || Zn([])) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
+	/*   Загрузка STL убрана из UI — проект хранится в JSON   */
+ Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-move").onclick = () => Mo("translate"); Mt("mode-rotate").onclick = () => Mo("rotate"); Mt("mode-scale").onclick = () => Mo("scale"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(), saveProjectJSON()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || Zn([])) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
 	/*   Главный цикл рендера   */
 	function tS() { requestAnimationFrame(tS); let n = C4.getDelta(); if (xr) { xr.t = Math.min(1, xr.t + n / .45); let e = 1 - Math.pow(1 - xr.t, 3); Vi.position.lerpVectors(xr.from, xr.to, e), xr.t >= 1 && (xr = null) } Mr.update(), ac.animating && ac.update(n); for (let [e, t] of Df) e.parent === Vt && t.update(); os.clear(), os.render(Vt, Vi), ac.render(os) } M4(); T4(); ls(); hc(); tS(); requestAnimationFrame(() => Mt("loading").classList.add("hidden"));
 	/*   Публичный API (window.app)   */
