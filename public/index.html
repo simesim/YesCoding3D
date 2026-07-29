@@ -41,11 +41,17 @@
       <!-- Новый / загрузка STL / экспорт STL -->
       <div class="tb-group">
         <button id="btn-new" class="tb" title="Новый проект"><img src="./icons/new.png" class="iconsImage" alt="">Новый</button>
-        <button id="btn-import" class="tb" title="Загрузить STL (Ctrl+O)"><img src="./icons/import.png" class="iconsImage" alt="">Загрузить</button>
-        <button id="btn-export" class="tb tb-primary" title="Экспорт STL (Ctrl+E)"><img src="./icons/export.png" class="iconsImage" alt="">Экспорт STL</button>
+        <button id="btn-import" class="tb" title="Загрузить STL (Ctrl+O)"><img src="./icons/import.png" class="iconsImage" alt="">STL</button>
+        <button id="btn-export" class="tb tb-primary" title="Экспорт STL (Ctrl+E)"><img src="./icons/export.png" class="iconsImage" alt="">STL</button>
       </div>
-      <!-- Скрытый input для выбора .stl файла -->
+      <span class="tb-sep"></span>
+      <!-- Проект JSON: фигуры по отдельности -->
+      <div class="tb-group">
+        <button id="btn-save-json" class="tb" title="Сохранить проект (JSON)">Сохранить</button>
+        <button id="btn-load-json" class="tb" title="Открыть проект (JSON)">Открыть</button>
+      </div>
       <input type="file" id="stl-input" accept=".stl,model/stl,application/sla" hidden>
+      <input type="file" id="json-input" accept=".json,application/json" hidden>
       <span class="tb-sep"></span>
 
       <!-- Отмена / повтор -->
@@ -115,7 +121,7 @@
     <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
     <footer id="statusbar">
       <span><b>G</b> двигать</span><span><b>R</b> вращать</span><span><b>S</b> размер</span>
-      <span><b>D</b> на плоскость</span><span><b>Ctrl+O</b> загрузка</span><span><b>Ctrl+D</b> копия</span>
+      <span><b>D</b> на плоскость</span><span><b>Ctrl+O</b> STL</span><span><b>Ctrl+S</b> JSON</span><span><b>Ctrl+D</b> копия</span>
       <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
       <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
     </footer>
@@ -170,6 +176,21 @@
         showFatal("Произошла непредвиденная ошибка, и редактор не может продолжить работу. Попробуйте обновить страницу.");
       });
 
+      if (typeof Uint8Array.fromBase64 !== "function") {
+        Uint8Array.fromBase64 = function (str) {
+          var bin = atob(String(str).replace(/-/g, "+").replace(/_/g, "/"));
+          var out = new Uint8Array(bin.length);
+          for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+          return out;
+        };
+      }
+      if (typeof Uint8Array.prototype.toBase64 !== "function") {
+        Uint8Array.prototype.toBase64 = function () {
+          var s = "";
+          for (var i = 0; i < this.length; i++) s += String.fromCharCode(this[i]);
+          return btoa(s);
+        };
+      }
       var script = document.createElement("script");
       script.src = "./app.js";
       script.onerror = function () {

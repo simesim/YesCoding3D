@@ -4029,11 +4029,7 @@ bool _bvhIntersectFirstHit(
 	var If = null; try { If = I1.parse(sc.buffer.slice(sc.byteOffset, sc.byteOffset + sc.byteLength)) } catch (n) { console.error("font parse failed", n) }
 	/*   Инициализация рендерера, камеры, сцены и света   */
 	var Mt = n => document.getElementById(n), Sr = Mt("gl"), D1 = Mt("viewport"), os = new Ds({ canvas: Sr, antialias: !0, alpha: !0 }); os.setPixelRatio(Math.min(devicePixelRatio, 2)); os.shadowMap.enabled = !0; os.shadowMap.type = ph; os.autoClear = !1; var Vt = new Us, Vi = new Bt(45, 1, 1, 4e3); Vi.position.set(170, 150, 170); var Mr = new Sh(Vi, Sr); Mr.target.set(0, 12, 0); Mr.enableDamping = !0; Mr.dampingFactor = .12; Mr.minDistance = 25; Mr.maxDistance = 1400; Mr.maxPolarAngle = Math.PI * .495; Vt.add(new Ws(16777215, 14674677, 1.05)); var Mi = new zr(16777215, 1.7); Mi.position.set(130, 230, 150); Mi.castShadow = !0; Mi.shadow.mapSize.set(2048, 2048); Mi.shadow.camera.left = -170; Mi.shadow.camera.right = 170; Mi.shadow.camera.top = 170; Mi.shadow.camera.bottom = -170; Mi.shadow.camera.far = 700; Mi.shadow.bias = -2e-4; Mi.shadow.normalBias = .03; Vt.add(Mi); var G1 = new zr(14215423, .45); G1.position.set(-120, 90, -140); Vt.add(G1); var na = 200; { let n = new le(new Ci(900, 900), new Ya({ opacity: .16 })); n.rotation.x = -Math.PI / 2, n.receiveShadow = !0, Vt.add(n); let e = new le(new Ci(na, na), new sr({ color: 16186109, roughness: .95 })); e.rotation.x = -Math.PI / 2, e.position.y = -.05, Vt.add(e); let t = new Za(na, na, 14872055, 14872055); t.position.y = .02, t.material.transparent = !0, t.material.opacity = .55, Vt.add(t); let i = new Za(na, na / 10, 10207200, 12901360); i.position.y = .04, Vt.add(i); let r = na / 2, s = new Ha(new ze().setFromPoints([new E(-r, .06, -r), new E(r, .06, -r), new E(r, .06, r), new E(-r, .06, r)]), new Yt({ color: 4886754 })); Vt.add(s) } var ac = new Rh(Vi, Sr); ac.center = Mr.target; var z1 = [4886754, 1752220, 16098851, 16312092, 15158332, 10181046, 3066993, 16748465, 3426654, 9268835, 10197915, 16777215], c4 = 0, u4 = () => z1[c4++ % 8], W1 = n => new sr({ color: n, roughness: .55, metalness: .05 }), X1 = (() => { let n = document.createElement("canvas"); n.width = n.height = 64; let e = n.getContext("2d"); e.fillStyle = "#eceff1", e.fillRect(0, 0, 64, 64), e.strokeStyle = "#90a4ae", e.lineWidth = 7; for (let i = -64; i < 128; i += 16)e.beginPath(), e.moveTo(i, 64), e.lineTo(i + 64, 0), e.stroke(); let t = new Ns(n); return t.wrapS = t.wrapT = Rs, new sr({ map: t, color: 16777215, transparent: !0, opacity: .55, roughness: .8, side: nn, depthWrite: !1 }) })(), oc = new mf; oc.attributes = ["position", "normal"]; oc.useGroups = !1; function cg(n) { let e = new hr(n.geometry.clone()); return n.updateMatrixWorld(!0), n.matrixWorld.decompose(e.position, e.quaternion, e.scale), e.updateMatrixWorld(!0), e } function as(n) { return n.rotateX(-Math.PI / 2), n.center(), n } function _o(n) { return n.center(), n } function ia(n) { let e = new Hn; e.moveTo(n[0][0], n[0][1]); for (let t = 1; t < n.length; t++)e.lineTo(n[t][0], n[t][1]); return e.closePath(), e } function h4(n) { let e = []; for (let r = 0; r < n * 2; r++) { let s = r / (n * 2) * Math.PI * 2 - Math.PI / 2, a = r % 2 ? 5.2 : 12; e.push([Math.cos(s) * a, Math.sin(s) * a]) } return ia(e) } function f4(n) { let i = Math.PI * 2 / n, r = []; for (let o = 0; o < n; o++) { let l = o * i; r.push([Math.cos(l) * 9.6, Math.sin(l) * 9.6], [Math.cos(l + i * .3) * 9.6, Math.sin(l + i * .3) * 9.6], [Math.cos(l + i * .4) * 12, Math.sin(l + i * .4) * 12], [Math.cos(l + i * .7) * 12, Math.sin(l + i * .7) * 12], [Math.cos(l + i * .8) * 9.6, Math.sin(l + i * .8) * 9.6]) } let s = ia(r), a = new Ri; return a.absarc(0, 0, 3.4, 0, Math.PI * 2, !0), s.holes.push(a), s } function d4() { let n = new Hn, e = -12.5, t = -12.5; return n.moveTo(e + 12.5, t + 12.5), n.bezierCurveTo(e + 12.5, t + 12.5, e + 10, t + 20, e + 5, t + 20), n.bezierCurveTo(e - 2.5, t + 20, e - 2.5, t + 11.25, e - 2.5, t + 11.25), n.bezierCurveTo(e - 2.5, t + 5.5, e + 3.5, t - .9, e + 12.5, t - 5), n.bezierCurveTo(e + 21.5, t - .9, e + 27.5, t + 5.5, e + 27.5, t + 11.25), n.bezierCurveTo(e + 27.5, t + 11.25, e + 27.5, t + 20, e + 20, t + 20), n.bezierCurveTo(e + 15.5, t + 20, e + 12.5, t + 12.5, e + 12.5, t + 12.5), n } function U1(n, e) { let t = new Hn; t.absarc(0, 0, n, 0, Math.PI * 2, !1); let i = new Ri; return i.absarc(0, 0, e, 0, Math.PI * 2, !0), t.holes.push(i), t } function p4(n) { let i = 20 / n, r = 20 / n, s = [[0, 0], [20, 0]]; for (let a = 1; a <= n; a++)s.push([20 - (a - 1) * i, a * r], [20 - a * i, a * r]); return ia(s) } function m4(n) { let e = new Pi(10, n, Math.max(4, n >> 1), 0, Math.PI * 2, 0, Math.PI / 2), t = new Xa(10, n); return t.rotateX(Math.PI / 2), _o(Gm([e, t])) } function g4() { let n = new hr(new Et(11, 11, 8, 48)), e = new hr(new Et(9.5, 9.5, 12, 48)); return e.position.x = 6.5, n.updateMatrixWorld(!0), e.updateMatrixWorld(!0), _o(oc.evaluate(n, e, 1).geometry) } var Oi = { bevelEnabled: !1, curveSegments: 48 }; 
-	/*   Контуры буквы → Shape[] с дырками.
-	     Координаты Y отражены (-y), из-за этого направление обхода меняется:
-	     toShapes(false), а не true — иначе дырки (О, Ф, Ю, 8…) не вырезаются.
-	     Если toShapes всё же отдал дырку отдельной фигурой — собираем по вложенности.
-	*/
+
 	function glyphShapes(path) {
 		let shapes = path.toShapes(!1);
 		if (shapes.length <= 1) return shapes;
@@ -4095,7 +4091,7 @@ bool _bvhIntersectFirstHit(
 	function q1(n, e) { let t = kf(n, e), i = W1(u4()), r = new le(t, i); r.castShadow = r.receiveShadow = !0, r.userData = { kind: "shape", def: { type: n, params: { ...e } }, isHole: !1, _mat: i }; let s = mg(r), a = x4(s); return r.position.set(a.x, s.y / 2, a.z), r } function $1(n) { let e = n.userData.isHole, t = n.userData._mat.clone(), i = new le(n.geometry.clone(), e ? X1 : t); return i.geometry.computeBoundingBox(), i.castShadow = i.receiveShadow = !0, i.position.copy(n.position), i.quaternion.copy(n.quaternion), i.scale.copy(n.scale), i.userData = { kind: n.userData.kind, isHole: e, _mat: t, def: n.userData.def ? { type: n.userData.def.type, params: { ...n.userData.def.params } } : void 0, members: n.userData.members ? n.userData.members.map($1) : void 0, baseMatrix: n.userData.baseMatrix ? n.userData.baseMatrix.clone() : void 0 }, i } var Vf = [], Hf = []; function lc(n) { Vf.push(n), Hf.length = 0, hc() } function Hi(n) { n.apply(), lc(n) } function gg() { let n = Vf.pop(); n && (n.revert(), Hf.push(n), hc(), ls()) } function Uf() { let n = Hf.pop(); n && (n.apply(), Vf.push(n), hc(), ls()) } function aa(n, e) { return { apply() { n.forEach(t => Vt.remove(t)), e.forEach(t => Vt.add(t)), Zn(e.filter(t => t.userData.kind)) }, revert() { e.forEach(t => Vt.remove(t)), n.forEach(t => Vt.add(t)), Zn(n.filter(t => t.userData.kind)) } } } function vg(n, e, t) { let i = r => { n.forEach((s, a) => { s.matrix.copy(r[a]), s.matrix.decompose(s.position, s.quaternion, s.scale) }), Zn(n.filter(s => s.parent === Vt)) }; return { apply() { i(t) }, revert() { i(e) } } } function ra(n) { return { color: n.userData._mat.color.getHex(), isHole: n.userData.isHole, params: n.userData.def ? JSON.stringify(n.userData.def.params) : null } } function F1(n, e) { n.userData._mat.color.setHex(e.color), n.userData.def && e.params !== null && JSON.stringify(n.userData.def.params) !== e.params && (n.userData.def.params = JSON.parse(e.params), n.geometry.dispose(), n.geometry = kf(n.userData.def.type, n.userData.def.params)), n.userData.isHole = e.isHole, n.material = e.isHole ? X1 : n.userData._mat } function Ff(n, e, t) { return { apply() { n.forEach((i, r) => F1(i, t[r])), ls() }, revert() { n.forEach((i, r) => F1(i, e[r])), ls() } } } var ot = [], Df = new Map, yr = new st; Vt.add(yr); var Lt = new wh(Vi, Sr); Lt.setTranslationSnap(1); Lt.setRotationSnap(cr.degToRad(15)); Lt.setScaleSnap(.05); Lt.setSize(.95); Vt.add(Lt); Lt.addEventListener("dragging-changed", n => { Mr.enabled = !n.value }); function Zn(n) { ot = n.filter(e => e.parent === Vt); for (let [, e] of Df) Vt.remove(e); Df.clear(); for (let e of ot) { let t = new Al(e, 4886754); t.material.transparent = !0, t.material.opacity = .9, Vt.add(t), Df.set(e, t) } if (Lt.detach(), ot.length === 1) Lt.attach(ot[0]); else if (ot.length > 1) { let e = new E; ot.forEach(t => e.add(t.position)), e.divideScalar(ot.length), yr.position.copy(e), yr.quaternion.identity(), yr.scale.set(1, 1, 1), yr.updateMatrix(), Lt.attach(yr) } ls(), hc() } var br = null; Lt.addEventListener("mouseDown", () => { let n = Lt.object; n && (n.updateMatrix(), br = { pivotM: n.matrix.clone(), objs: [...ot], mats: ot.map(e => (e.updateMatrix(), e.matrix.clone())) }) }); Lt.addEventListener("objectChange", () => { if (br) { if (Lt.object === yr) { yr.updateMatrix(); let n = yr.matrix.clone().multiply(br.pivotM.clone().invert()); br.objs.forEach((e, t) => { e.matrix.copy(n.clone().multiply(br.mats[t])), e.matrix.decompose(e.position, e.quaternion, e.scale) }) } A4() } }); Lt.addEventListener("mouseUp", () => { if (!br) return; let n = br.objs, e = br.mats, t = n.map(r => (r.updateMatrix(), r.matrix.clone())); t.some((r, s) => !r.equals(e[s])) && lc(vg(n, e, t)), br = null, ls() }); addEventListener("keydown", n => { n.key === "Shift" && (Lt.setTranslationSnap(null), Lt.setRotationSnap(null), Lt.setScaleSnap(null)) }); addEventListener("keyup", n => { n.key === "Shift" && (Lt.setTranslationSnap(1), Lt.setRotationSnap(cr.degToRad(15)), Lt.setScaleSnap(.05)) }); var B1 = new lr, N1 = new Q, So = null; Sr.addEventListener("pointerdown", n => { let e = Sr.getBoundingClientRect(); if (n.clientX > e.right - 128 && n.clientY > e.bottom - 128 && ac.handleClick(n)) { So = null; return } So = { x: n.clientX, y: n.clientY } }); Sr.addEventListener("pointerup", n => { if (!So) return; let e = Math.hypot(n.clientX - So.x, n.clientY - So.y) > 5; if (So = null, e || Lt.dragging || Lt.axis) return; let t = Z1(n); if (t) if (n.shiftKey) { let i = ot.indexOf(t); Zn(i >= 0 ? ot.filter(r => r !== t) : [...ot, t]) } else Zn([t]); else n.shiftKey || Zn([]) }); Sr.addEventListener("dblclick", n => { let e = Z1(n); e && e.userData.kind === "group" && y4(e) }); function Z1(n) { let e = Sr.getBoundingClientRect(); N1.set((n.clientX - e.left) / e.width * 2 - 1, -((n.clientY - e.top) / e.height) * 2 + 1), B1.setFromCamera(N1, Vi); let t = B1.intersectObjects(sa(), !1); return t.length ? t[0].object : null }
 	/*   Добавление фигуры на сцену   */
 	/*   Добавить фигуру на сцену + запись в undo (aa/Hi)   */
-	function K1(n, e) { let t = q1(n, e ?? Y1(n)); return Hi(aa([], [t])), t } /*   Добавить 3D-текст (opentype.js → ExtrudeGeometry)   */
+	function K1(n, e) { let t = q1(n, e ?? Y1(n)); return Hi(aa([], [t])), t } /*   Добавить 3D-текст (opentype.js ExtrudeGeometry)   */
 	function dg(n) { let e = q1("text", { text: n }); return Hi(aa([], [e])), e } /*   Удалить выделенные объекты   */
 	function xg() { ot.length && (Hi(aa([...ot], [])), ki("\u0423\u0434\u0430\u043B\u0435\u043D\u043E")) } /*   Дублировать выделенные   */
 	function yg() { if (!ot.length) return; let n = ot.map($1); n.forEach(e => { e.position.x += 8, e.position.z += 8 }), Hi(aa([], n)), ki("\u0421\u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u043E") } function J1() { if (!ot.length) return; let n = ot.map(t => (t.updateMatrix(), t.matrix.clone())); ot.forEach(t => { let i = new ut().setFromObject(t); t.position.y -= i.min.y }); let e = ot.map(t => (t.updateMatrix(), t.matrix.clone())); e.some((t, i) => !t.equals(n[i])) && lc(vg([...ot], n, e)), Zn(ot) } var Bf = null;
@@ -4103,9 +4099,174 @@ bool _bvhIntersectFirstHit(
 	/*   Группировка: boolean union тел + вычитание отверстий (CSG из бандла)   */
 	function cc() { let n = [...ot]; if (n.length < 2) { ki("\u0412\u044B\u0434\u0435\u043B\u0438 \u0445\u043E\u0442\u044F \u0431\u044B \u0434\u0432\u0430 \u043E\u0431\u044A\u0435\u043A\u0442\u0430", !0); return } let e = n.filter(l => !l.userData.isHole), t = n.filter(l => l.userData.isHole); if (!e.length) { ki("\u041D\u0443\u0436\u043D\u0430 \u0445\u043E\u0442\u044F \u0431\u044B \u043E\u0434\u043D\u0430 \u0444\u0438\u0433\u0443\u0440\u0430-\u0442\u0435\u043B\u043E (\u043D\u0435 \u043E\u0442\u0432\u0435\u0440\u0441\u0442\u0438\u0435)", !0); return } let i; try { i = cg(e[0]); for (let l = 1; l < e.length; l++)i = oc.evaluate(i, cg(e[l]), 0); for (let l of t) i = oc.evaluate(i, cg(l), 1) } catch (l) { console.error(l), ki("\u041D\u0435 \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u043E\u0441\u044C \u043E\u0431\u044A\u0435\u0434\u0438\u043D\u0438\u0442\u044C \u0444\u0438\u0433\u0443\u0440\u044B", !0); return } let r = i.geometry; r.computeBoundingBox(); let s = r.boundingBox.getCenter(new E); r.translate(-s.x, -s.y, -s.z), r.computeBoundingBox(); let a = e[0].userData._mat.clone(), o = new le(r, a); o.castShadow = o.receiveShadow = !0, o.position.copy(s), o.updateMatrix(), o.userData = { kind: "group", isHole: !1, _mat: a, members: n, baseMatrix: o.matrix.clone() }, Hi(aa(n, [o])), bg(), ki(t.length ? "\u0421\u0433\u0440\u0443\u043F\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u043E \u2014 \u043E\u0442\u0432\u0435\u0440\u0441\u0442\u0438\u044F \u0432\u044B\u0440\u0435\u0437\u0430\u043D\u044B" : "\u0421\u0433\u0440\u0443\u043F\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u043E") } /*   Разгруппировать: вернуть members на сцену   */
 	function uc(n) { if (ot.length !== 1 || ot[0].userData.kind !== "group") return n || ki("\u0412\u044B\u0434\u0435\u043B\u0438 \u043E\u0434\u043D\u0443 \u0433\u0440\u0443\u043F\u043F\u0443", !0), null; let e = ot[0]; e.updateMatrix(); let t = e.matrix.clone().multiply(e.userData.baseMatrix.clone().invert()), i = e.userData.members; return i.forEach(r => { r.updateMatrix(), r.matrix.premultiply(t), r.matrix.decompose(r.position, r.quaternion, r.scale) }), e.userData.baseMatrix = e.matrix.clone(), Hi(aa([e], i)), i } function y4(n) { Zn([n]); let e = uc(!0); e && (Bf = e, Mt("edit-hint").classList.remove("hidden"), ki("\u041C\u0435\u043D\u044F\u0439 \u0434\u0435\u0442\u0430\u043B\u0438 \u0433\u0440\u0443\u043F\u043F\u044B, Esc \u2014 \u0441\u043E\u0431\u0440\u0430\u0442\u044C \u043E\u0431\u0440\u0430\u0442\u043D\u043E")) } function bg() { Bf = null, Mt("edit-hint").classList.add("hidden") } function b4() { if (!Bf) return !1; let n = Bf.filter(e => e.parent === Vt); return n.length >= 2 ? (Zn(n), cc()) : bg(), !0 } function Q1(n, e) { let t = Array.isArray(n) ? n : [n], i = t.map(ra), r = t.map(s => ({ ...ra(s), isHole: e })); Hi(Ff(t, i, r)) } function _4() { let n = sa(); n.length && !confirm("\u041D\u0430\u0447\u0430\u0442\u044C \u043D\u043E\u0432\u044B\u0439 \u043F\u0440\u043E\u0435\u043A\u0442? \u0422\u0435\u043A\u0443\u0449\u0430\u044F \u0441\u0446\u0435\u043D\u0430 \u0431\u0443\u0434\u0435\u0442 \u043E\u0447\u0438\u0449\u0435\u043D\u0430.") || (n.length && Hi(aa(n, [])), bg()) }
+
+	/*   === Проект JSON: сохранить / открыть (фигуры по отдельности) ===
+	     Позже тот же JSON можно слать на сервер / Drive.
+	*/
+	function serializeObj(n) {
+		let base = {
+			position: [n.position.x, n.position.y, n.position.z],
+			rotation: [n.rotation.x, n.rotation.y, n.rotation.z],
+			scale: [n.scale.x, n.scale.y, n.scale.z],
+			color: n.userData._mat.color.getHex(),
+			isHole: !!n.userData.isHole
+		};
+		if (n.userData.kind === "group") {
+			return Object.assign({ kind: "group" }, base, {
+				members: (n.userData.members || []).map(serializeObj)
+			});
+		}
+		let def = n.userData.def || {};
+		let type = def.type || "baked";
+		// параметрические фигуры из каталога
+		if (type !== "stl" && type !== "baked" && _r[type]) {
+			return Object.assign({ kind: "shape", type: type, params: Object.assign({}, def.params || {}) }, base);
+		}
+		// STL / неизвестное — сохраняем вершины
+		let arr = n.geometry && n.geometry.attributes && n.geometry.attributes.position
+			? Array.from(n.geometry.attributes.position.array) : [];
+		return Object.assign({ kind: "shape", type: "baked", positions: arr, name: (def.params && def.params.name) || "" }, base);
+	}
+
+	function applyTransform(mesh, d) {
+		mesh.position.set(d.position[0], d.position[1], d.position[2]);
+		mesh.rotation.set(d.rotation[0], d.rotation[1], d.rotation[2]);
+		mesh.scale.set(d.scale[0], d.scale[1], d.scale[2]);
+		mesh.updateMatrix();
+	}
+
+	function applyColorHole(mesh, d) {
+		mesh.userData._mat.color.setHex(d.color);
+		mesh.userData.isHole = !!d.isHole;
+		mesh.material = d.isHole ? X1 : mesh.userData._mat;
+		if (d.isHole && mesh.material) mesh.material.needsUpdate = !0;
+	}
+
+	function meshFromData(d) {
+		if (d.kind === "group") {
+			let members = (d.members || []).map(meshFromData);
+			if (members.length < 1) {
+				// пустая группа — пропускаем
+				let empty = new le(new vt(1, 1, 1), W1(d.color || 0x4A90E2));
+				empty.userData = { kind: "shape", def: { type: "box", params: {} }, isHole: !1, _mat: empty.material };
+				applyTransform(empty, d);
+				return empty;
+			}
+			if (members.length === 1) {
+				applyTransform(members[0], d);
+				applyColorHole(members[0], d);
+				return members[0];
+			}
+			// CSG как в cc()
+			let solids = members.filter(m => !m.userData.isHole);
+			let holes = members.filter(m => m.userData.isHole);
+			if (!solids.length) solids = members.slice(0, 1), holes = members.slice(1);
+			let i;
+			try {
+				i = cg(solids[0]);
+				for (let l = 1; l < solids.length; l++) i = oc.evaluate(i, cg(solids[l]), 0);
+				for (let l of holes) i = oc.evaluate(i, cg(l), 1);
+			} catch (err) {
+				console.error(err);
+				// fallback: просто первый solid
+				applyTransform(solids[0], d);
+				return solids[0];
+			}
+			let r = i.geometry;
+			r.computeBoundingBox();
+			let s = r.boundingBox.getCenter(new E);
+			r.translate(-s.x, -s.y, -s.z);
+			r.computeBoundingBox();
+			let a = W1(d.color != null ? d.color : solids[0].userData._mat.color.getHex());
+			let o = new le(r, a);
+			o.castShadow = o.receiveShadow = !0;
+			// геометрия центрирована; ставим transform из JSON (позиция после возможного сдвига группы)
+			o.position.set(d.position[0], d.position[1], d.position[2]);
+			o.rotation.set(d.rotation[0], d.rotation[1], d.rotation[2]);
+			o.scale.set(d.scale[0], d.scale[1], d.scale[2]);
+			o.updateMatrix();
+			o.userData = { kind: "group", isHole: !1, _mat: a, members: members, baseMatrix: o.matrix.clone() };
+			return o;
+		}
+		// shape
+		let type = d.type || "box";
+		let mesh;
+		if (type === "baked" || type === "stl") {
+			let geo = new ze();
+			let pos = d.positions || [];
+			geo.setAttribute("position", new Ae(new Float32Array(pos), 3));
+			geo.computeVertexNormals();
+			geo.computeBoundingBox();
+			let mat = W1(d.color != null ? d.color : u4());
+			mesh = new le(geo, mat);
+			mesh.castShadow = mesh.receiveShadow = !0;
+			mesh.userData = { kind: "shape", def: { type: "stl", params: { name: d.name || "mesh" } }, isHole: !1, _mat: mat };
+		} else {
+			let params = d.params || Y1(type);
+			let geo = kf(type, params);
+			let mat = W1(d.color != null ? d.color : u4());
+			mesh = new le(geo, mat);
+			mesh.castShadow = mesh.receiveShadow = !0;
+			mesh.userData = { kind: "shape", def: { type: type, params: Object.assign({}, params) }, isHole: !1, _mat: mat };
+		}
+		applyTransform(mesh, d);
+		applyColorHole(mesh, d);
+		return mesh;
+	}
+
+	function buildProjectJSON() {
+		return {
+			version: 1,
+			name: "YesCoding3D project",
+			savedAt: new Date().toISOString(),
+			figures: sa().map(serializeObj)
+		};
+	}
+
+	/*   Скачать проект как .json файл   */
+	function saveProjectJSON() {
+		let data = buildProjectJSON();
+		if (!data.figures.length) {
+			ki("На площадке нет фигур для сохранения", !0);
+			return;
+		}
+		let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+		let a = document.createElement("a");
+		a.href = URL.createObjectURL(blob);
+		a.download = "yescoding3d-project.json";
+		a.click();
+		URL.revokeObjectURL(a.href);
+		ki("Проект сохранён (JSON)");
+	}
+
+	/*   Загрузить проект из .json файла   */
+	function loadProjectJSON(file) {
+		if (!file) return;
+		let reader = new FileReader();
+		reader.onload = () => {
+			try {
+				let data = JSON.parse(reader.result);
+				let list = data.figures || data.objects || (Array.isArray(data) ? data : null);
+				if (!list || !list.length) throw new Error("empty project");
+				let created = list.map(meshFromData);
+				let old = sa();
+				Hi(aa(old, created));
+				bg();
+				Zn([]);
+				ki("Проект открыт: " + created.length + " объект(ов)");
+			} catch (err) {
+				console.error(err);
+				ki("Не удалось открыть JSON", !0);
+			}
+		};
+		reader.onerror = () => ki("Ошибка чтения файла", !0);
+		reader.readAsText(file);
+	}
+
+
 	/*   Экспорт сцены в STL   */
 	
-	/*   Парсер STL (binary + ascii) → BufferGeometry (класс ze из Three.js)
+	/*   Парсер STL (binary + ascii) BufferGeometry (класс ze из Three.js)
 	     Binary: 80 байт заголовок + uint32 кол-во треугольников + по 50 байт на треугольник
 	     ASCII: строки facet normal / vertex
 	*/
@@ -4153,14 +4314,14 @@ bool _bvhIntersectFirstHit(
 		return geo;
 	}
 
-	/*   Загрузка STL-файла с диска → mesh на сцене (как обычная фигура)   */
+	/*   Загрузка STL-файла с диска  mesh на сцене (как обычная фигура)   */
 	function loadSTLFile(file) {
 		if (!file) return;
 		let reader = new FileReader();
 		reader.onload = () => {
 			try {
 				let geo = parseSTL(reader.result);
-				// экспорт крутит +90° по X (Y-up → Z-up для печати), при загрузке — обратно
+				// экспорт крутит +90° по X (Y-up Z-up для печати), при загрузке — обратно
 				geo.rotateX(-Math.PI / 2);
 				geo.computeBoundingBox();
 				let mat = W1(u4());
@@ -4195,17 +4356,24 @@ bool _bvhIntersectFirstHit(
 		} if (ot.length > 1) { Pt.innerHTML = ""; let d = document.createElement("div"); d.innerHTML = `<div class="multi-count">${ot.length}</div><div class="insp-sub">\u043E\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043E</div>`, Pt.appendChild(d), Pt.appendChild(V1(ot)); let m = document.createElement("button"); m.className = "btn-wide", m.textContent = "\u2B21 \u0421\u0433\u0440\u0443\u043F\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C (Ctrl+G)", m.onclick = cc, Pt.appendChild(m); return } let n = ot[0], e = n.userData.kind === "group", t = n.userData.def; Pt.innerHTML = ""; let i = document.createElement("div"); i.innerHTML = `<div class="insp-title">${e ? "\u0413\u0440\u0443\u043F\u043F\u0430" : t.type === "text" ? `\u0422\u0435\u043A\u0441\u0442 \xAB${(t.params.text + "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]))}\xBB` : _r[t.type].name}</div>
     <div class="insp-sub">${n.userData.isHole ? "\u043E\u0442\u0432\u0435\u0440\u0441\u0442\u0438\u0435" : "\u0444\u0438\u0433\u0443\u0440\u0430"}</div>`, Pt.appendChild(i); let r = mg(n), s = { o: n, pos: {}, rot: {}, dim: {} }; if (Pt.appendChild(bo("\u0420\u0430\u0437\u043C\u0435\u0440\u044B, \u043C\u043C")), Pt.appendChild(ug(["\u0428\u0438\u0440\u0438\u043D\u0430", "\u0412\u044B\u0441\u043E\u0442\u0430", "\u0413\u043B\u0443\u0431\u0438\u043D\u0430"], ["x", "y", "z"].map(d => { let m = hg(Of(r[d] * n.scale[d]), .5); return s.dim[d] = m, fg(m, n, () => { n.scale[d] = Math.max(.02, m.valueAsNumber / r[d] || n.scale[d]) }), m }))), Pt.appendChild(bo("\u041F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u0435, \u043C\u043C")), Pt.appendChild(ug(["X", "\u0412\u0432\u0435\u0440\u0445", "Z"], ["x", "y", "z"].map(d => { let m = hg(Of(n.position[d]), 1); return s.pos[d] = m, fg(m, n, () => { n.position[d] = m.valueAsNumber || 0 }), m }))), Pt.appendChild(bo("\u041F\u043E\u0432\u043E\u0440\u043E\u0442, \xB0")), Pt.appendChild(ug(["X", "Y", "Z"], ["x", "y", "z"].map(d => { let m = hg(Math.round(cr.radToDeg(n.rotation[d])), 15); return s.rot[d] = m, fg(m, n, () => { n.rotation[d] = cr.degToRad(m.valueAsNumber || 0) }), m }))), !e && t.type === "text") { Pt.appendChild(bo("\u041D\u0430\u0434\u043F\u0438\u0441\u044C")); let d = document.createElement("div"); d.className = "f-text"; let m = document.createElement("input"); m.value = t.params.text, m.maxLength = 16, m.addEventListener("keydown", x => x.stopPropagation()), m.addEventListener("change", () => { if (!m.value.trim()) return; let x = [ra(n)], g = [{ ...x[0], params: JSON.stringify({ ...t.params, text: m.value.trim() }) }]; Hi(Ff([n], x, g)) }), d.appendChild(m), Pt.appendChild(d) } let a = e ? {} : _r[t.type].params || {}, o = Object.keys(a); if (o.length) { Pt.appendChild(bo("\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u0444\u043E\u0440\u043C\u044B")); for (let d of o) { let m = a[d], x = document.createElement("div"); x.className = "f-range"; let g = document.createElement("label"); g.textContent = m.label; let p = document.createElement("input"); p.type = "range", p.min = m.min, p.max = m.max, p.step = m.step, p.value = t.params[d]; let y = document.createElement("output"); y.value = t.params[d]; let v = null; p.addEventListener("input", () => { v || (v = [ra(n)]), y.value = p.value, t.params[d] = parseFloat(p.value), n.geometry.dispose(), n.geometry = kf(t.type, t.params) }), p.addEventListener("change", () => { v && (lc(Ff([n], v, [ra(n)])), v = null) }), x.append(g, p, y), Pt.appendChild(x) } } Pt.appendChild(bo("\u0426\u0432\u0435\u0442")); let l = document.createElement("div"); l.className = "swatches"; let c = n.userData._mat.color.getHex(); for (let d of z1) { let m = document.createElement("button"); m.className = "sw" + (d === c ? " on" : ""), m.style.background = "#" + d.toString(16).padStart(6, "0"), m.onclick = () => k1([n], d), l.appendChild(m) } Pt.appendChild(l); let u = document.createElement("div"); u.className = "sw-custom"; let f = document.createElement("input"); f.type = "color", f.value = "#" + c.toString(16).padStart(6, "0"), f.addEventListener("change", () => k1([n], parseInt(f.value.slice(1), 16))), u.append(f, document.createTextNode("\u0441\u0432\u043E\u0439 \u0446\u0432\u0435\u0442")), Pt.appendChild(u), Pt.appendChild(V1([n])); let h = document.createElement("button"); if (h.className = "btn-wide", h.textContent = "\u2B07 \u041E\u043F\u0443\u0441\u0442\u0438\u0442\u044C \u043D\u0430 \u043F\u043B\u043E\u0441\u043A\u043E\u0441\u0442\u044C (D)", h.onclick = J1, Pt.appendChild(h), e) { let d = document.createElement("button"); d.className = "btn-wide", d.textContent = "\u2B21\u0338 \u0420\u0430\u0437\u0433\u0440\u0443\u043F\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C (Ctrl+Shift+G)", d.onclick = () => uc(), Pt.appendChild(d) } Si = s
 	} function k1(n, e) { let t = n.map(ra), i = n.map(r => ({ ...ra(r), color: e })); Hi(Ff(n, t, i)) } function V1(n) { let e = document.createElement("label"); e.className = "hole-row"; let t = document.createElement("input"); t.type = "checkbox", t.checked = n.every(r => r.userData.isHole), t.addEventListener("change", () => Q1(n, t.checked)); let i = document.createElement("span"); return i.innerHTML = "\u041E\u0442\u0432\u0435\u0440\u0441\u0442\u0438\u0435<small>\u0441\u0433\u0440\u0443\u043F\u043F\u0438\u0440\u0443\u0439 \u0441 \u0444\u0438\u0433\u0443\u0440\u043E\u0439 \u2014 \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0441\u044F \u0432\u044B\u0440\u0435\u0437</small>", e.append(t, i), e } function bo(n) { let e = document.createElement("div"); return e.className = "f-sec", e.textContent = n, e } function ug(n, e) { let t = document.createElement("div"); return t.className = "f-row3", n.forEach((i, r) => { let s = document.createElement("div"); s.className = "f-cell"; let a = document.createElement("label"); a.textContent = i, s.append(a, e[r]), t.appendChild(s) }), t } function hg(n, e) { let t = document.createElement("input"); return t.type = "number", t.value = n, t.step = e, t.addEventListener("keydown", i => i.stopPropagation()), t } function fg(n, e, t) { n.addEventListener("change", () => { e.updateMatrix(); let i = [e.matrix.clone()]; t(), e.updateMatrix(); let r = [e.matrix.clone()]; r[0].equals(i[0]) || lc(vg([e], i, r)), ls() }) } function Of(n) { return Math.round(n * 100) / 100 } function A4() { if (!Si || ot.length !== 1 || Si.o !== ot[0]) return; let n = Si.o, e = mg(n); for (let t of ["x", "y", "z"]) document.activeElement !== Si.pos[t] && (Si.pos[t].value = Of(n.position[t])), document.activeElement !== Si.rot[t] && (Si.rot[t].value = Math.round(cr.radToDeg(n.rotation[t]))), document.activeElement !== Si.dim[t] && (Si.dim[t].value = Of(e[t] * n.scale[t])) } function hc() { Mt("btn-undo").disabled = !Vf.length, Mt("btn-redo").disabled = !Hf.length, Mt("btn-dup").disabled = Mt("btn-del").disabled = !ot.length, Mt("btn-group").disabled = ot.length < 2, Mt("btn-ungroup").disabled = !(ot.length === 1 && ot[0].userData.kind === "group") } function Mo(n) { Lt.setMode(n); for (let e of ["move", "rotate", "scale"]) Mt("mode-" + e).classList.toggle("on", (e === "move" ? "translate" : e) === n) } Mt("btn-new").onclick = _4; Mt("btn-export").onclick = _g;
+	Mt("btn-save-json").onclick = saveProjectJSON;
+	Mt("btn-load-json").onclick = () => Mt("json-input").click();
+	Mt("json-input").addEventListener("change", n => {
+		let e = n.target.files && n.target.files[0];
+		e && loadProjectJSON(e);
+		n.target.value = "";
+	});
 	/*   Кнопка «Загрузить» открывает file input   */
 	Mt("btn-import").onclick = () => Mt("stl-input").click();
 	Mt("stl-input").addEventListener("change", n => {
 		let e = n.target.files && n.target.files[0];
 		e && loadSTLFile(e);
 		n.target.value = "";
-	}); Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-move").onclick = () => Mo("translate"); Mt("mode-rotate").onclick = () => Mo("rotate"); Mt("mode-scale").onclick = () => Mo("scale"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyO" ? (n.preventDefault(), Mt("stl-input").click()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || Zn([])) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
+	}); Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-move").onclick = () => Mo("translate"); Mt("mode-rotate").onclick = () => Mo("rotate"); Mt("mode-scale").onclick = () => Mo("scale"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(), saveProjectJSON()) : t && n.code === "KeyO" ? (n.preventDefault(), Mt("stl-input").click()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || Zn([])) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
 	/*   Главный цикл рендера   */
 	function tS() { requestAnimationFrame(tS); let n = C4.getDelta(); if (xr) { xr.t = Math.min(1, xr.t + n / .45); let e = 1 - Math.pow(1 - xr.t, 3); Vi.position.lerpVectors(xr.from, xr.to, e), xr.t >= 1 && (xr = null) } Mr.update(), ac.animating && ac.update(n); for (let [e, t] of Df) e.parent === Vt && t.update(); os.clear(), os.render(Vt, Vi), ac.render(os) } M4(); T4(); ls(); hc(); tS(); requestAnimationFrame(() => Mt("loading").classList.add("hidden"));
 	/*   Публичный API (window.app)   */
-	window.app = { addShape: K1, addText: dg, loadSTL: loadSTLFile, select: Zn, selectAll: () => Zn(sa()), group: cc, ungroup: () => uc(), setHole: (n, e) => Q1(n, e), del: xg, dup: yg, undo: gg, redo: Uf, exportSTLBytes: _g, objects: sa, THREE: Bm };
+	window.app = { addShape: K1, addText: dg, loadSTL: loadSTLFile, saveProject: saveProjectJSON, loadProject: loadProjectJSON, buildProjectJSON: buildProjectJSON, select: Zn, selectAll: () => Zn(sa()), group: cc, ungroup: () => uc(), setHole: (n, e) => Q1(n, e), del: xg, dup: yg, undo: gg, redo: Uf, exportSTLBytes: _g, objects: sa, THREE: Bm };
 })();
 /*! Bundled license information:
 
