@@ -73,11 +73,12 @@
       </div>
       <span class="tb-sep"></span>
 
-      <!-- Режимы трансформации: двигать / вращать / масштаб -->
-      <div class="tb-group seg" id="mode-seg">
-        <button id="mode-move" class="tb seg-b on" title="Переместить (G)"><img src="./icons/move.png" class="iconsImage">Двигать</button>
-        <button id="mode-rotate" class="tb seg-b" title="Повернуть (R)"><img src="./icons/rotate.png" class="iconsImage">Вращать</button>
-        <button id="mode-scale" class="tb seg-b" title="Масштаб (S)"><img src="./icons/size.png" class="iconsImage">Размер</button>
+      <!-- Один режим-трансформ: клик или Tab — цикл Двигать→Вращать→Размер; G/R/S — сразу -->
+      <div class="tb-group" id="mode-seg">
+        <button id="mode-cycle" class="tb on" title="Трансформация: клик или Tab — смена режима. G двигать, R вращать, S размер">
+          <img src="./icons/move.png" class="iconsImage" id="mode-icon" alt="">
+          <span id="mode-label">Двигать</span>
+        </button>
       </div>
     </header>
 
@@ -118,7 +119,7 @@
 
     <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
     <footer id="statusbar">
-      <span><b>G</b> двигать</span><span><b>R</b> вращать</span><span><b>S</b> размер</span>
+      <span><b>G</b>/<b>R</b>/<b>S</b> трансформ</span><span><b>Tab</b> смена режима</span>
       <span><b>D</b> на плоскость</span><span><b>Ctrl+S</b> сохранить</span><span><b>Ctrl+E</b> печать</span><span><b>Ctrl+D</b> копия</span>
       <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
       <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
