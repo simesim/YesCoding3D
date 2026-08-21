@@ -84,6 +84,36 @@ curl -I http://localhost:3000/package.json            # 404 — то же сам
 2. Порты 80/443 предполагаются свободными под реверс-прокси (nginx/Caddy/Traefik) — пример конфига для nginx лежит в [`deploy/nginx-yescoding3d.conf`](deploy/nginx-yescoding3d.conf): проксирует `/` на `127.0.0.1:3000`.
 3. HTTPS (например через certbot) вешается на реверс-прокси, отдельно от самого приложения — самому Node-серверу TLS настраивать не нужно.
 
+### Первичная настройка сервера (один раз)
+
+```bash
+ssh 3d   # или root@<ip>
+git clone https://github.com/simesim/YesCoding3D.git /opt/yescoding3d
+cd /opt/yescoding3d
+docker build -t yescoding3d:latest .
+docker run -d --name yescoding3d --restart unless-stopped -p 3000:3000 yescoding3d:latest
+```
+
+### Обновление на проде (после того как в GitHub появились новые коммиты)
+
+```bash
+ssh 3d
+cd /opt/yescoding3d
+./deploy/deploy.sh
+```
+
+Скрипт делает `git pull --ff-only`, пересобирает образ и перезапускает контейнер с проверкой, что сервис поднялся. Если нужно всё то же самое руками:
+
+```bash
+cd /opt/yescoding3d
+git pull --ff-only origin main
+docker build -t yescoding3d:latest .
+docker stop yescoding3d && docker rm yescoding3d
+docker run -d --name yescoding3d --restart unless-stopped -p 3000:3000 yescoding3d:latest
+```
+
+nginx трогать не нужно — он всегда проксирует на `127.0.0.1:3000`, независимо от того, какой образ там крутится.
+
 ## Лицензии
 
 Сторонние библиотеки, забандленные в `public/app.js` (Three.js, opentype.js), перечислены в [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
