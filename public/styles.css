@@ -622,3 +622,18 @@ input {
   border: 2px solid var(--panel);
 }
 ::-webkit-scrollbar-track { background: transparent; }
+
+
+.tb.on {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+#marquee {
+  position: absolute;
+  border: 1.5px dashed var(--blue);
+  background: rgba(74, 144, 226, .14);
+  pointer-events: none;
+  z-index: 8;
+  border-radius: 2px;
+}

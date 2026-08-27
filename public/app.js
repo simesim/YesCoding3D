@@ -4089,6 +4089,28 @@ bool _bvhIntersectFirstHit(
 	}
 
 	function v4(n, e = 22, t = 8) { if (!If || !n) return new vt(20, 8, 20); let i = [], r = 0; for (let s of n) { let a = If.charToGlyph(s), o = a.getPath(r, 0, e), l = new wl; for (let c of o.commands) c.type === "M" ? l.moveTo(c.x, -c.y) : c.type === "L" ? l.lineTo(c.x, -c.y) : c.type === "Q" ? l.quadraticCurveTo(c.x1, -c.y1, c.x, -c.y) : c.type === "C" && l.bezierCurveTo(c.x1, -c.y1, c.x2, -c.y2, c.x, -c.y); i.push(...glyphShapes(l)), r += a.advanceWidth / If.unitsPerEm * e } return i.length ? as(new Sn(i, { depth: t, bevelEnabled: !1, curveSegments: 16, steps: 1 })) : new vt(20, 8, 20) }
+	
+	
+	var BZ_DEFAULT = [{ x: 0, y: 16 }, { x: 14, y: 6 }, { x: 10, y: -12 }, { x: 0, y: -6 }, { x: -10, y: -12 }, { x: -14, y: 6 }];
+	function makeBezierGeo(n) {
+		var pts = (n && n.pts && n.pts.length >= 3) ? n.pts : BZ_DEFAULT;
+		var depth = (n && n.depth) || 8;
+		var s = new Hn();
+		var len = pts.length;
+		var g = function (i) { return pts[(i % len + len) % len]; };
+		s.moveTo(g(0).x, g(0).y);
+		for (var i = 0; i < len; i++) {
+			var p0 = g(i - 1), p1 = g(i), p2 = g(i + 1), p3 = g(i + 2);
+			s.bezierCurveTo(
+				p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6,
+				p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6,
+				p2.x, p2.y
+			);
+		}
+		s.closePath();
+		return as(new Sn(s, Object.assign({ depth: depth }, Oi)));
+	}
+
 	/* Каталог фигур */
 	var _r = {
 		box: { name: "\u041A\u0443\u0431", cat: "std", make: () => new vt(20, 20, 20) },
@@ -4124,6 +4146,7 @@ bool _bvhIntersectFirstHit(
 		oval: { name: "\u041E\u0432\u0430\u043B", cat: "decor", make: () => { let e = new Hn; e.ellipse(0, 0, 14, 9, 0, Math.PI * 2, !1, 0); return as(new Sn(e, { depth: 5, ...Oi })) } },
 		flower: { name: "\u0426\u0432\u0435\u0442\u043E\u043A", cat: "decor", params: { petals: { label: "\u041B\u0435\u043F\u0435\u0441\u0442\u043A\u0438", min: 4, max: 10, step: 1, def: 6 } }, make: n => { let e = []; for (let t = 0; t < n.petals * 2; t++) { let i = t / (n.petals * 2) * Math.PI * 2 - Math.PI / 2, r = t % 2 ? 5 : 13; e.push([Math.cos(i) * r, Math.sin(i) * r]) } return as(new Sn(ia(e), { depth: 6, ...Oi })) } },
 		bolt: { name: "\u0411\u043E\u043B\u0442", cat: "decor", make: () => { let e = new hr(new Et(5, 5, 18, 24)); e.position.y = 2; let t = new hr(new Et(9, 9, 5, 6)); t.position.y = 11.5; e.updateMatrixWorld(!0), t.updateMatrixWorld(!0); return _o(oc.evaluate(t, e, 0).geometry) } },
+		bezier: { name: "\u041A\u0440\u0438\u0432\u0430\u044F \u0411\u0435\u0437\u044C\u0435", cat: "tools", params: { depth: { label: "\u0412\u044B\u0441\u043E\u0442\u0430", min: 2, max: 40, step: 1, def: 8 } }, make: function (n) { return makeBezierGeo(n); } },
 		text: { name: "\u0422\u0435\u043A\u0441\u0442", cat: "chars", params: {}, make: n => v4(n.text || "\u0410") }
 	};
 	function kf(n, e) { let t = _r[n].make(e || {}); return t.computeBoundingBox(), t } function Y1(n) { let e = {}, t = _r[n].params || {}; for (let i in t) t[i].def !== void 0 && (e[i] = t[i].def); return e } var sa = () => Vt.children.filter(n => n.userData && n.userData.kind); function mg(n) { let e = n.geometry.boundingBox; return new E().subVectors(e.max, e.min) } function x4(n) { let e = new E(n.x / 2 + 2, n.y / 2, n.z / 2 + 2), t = sa().map(r => new ut().setFromObject(r)), i = (r, s) => { let a = new E(r, n.y / 2, s), o = new ut(a.clone().sub(e), a.clone().add(e)); return !t.some(l => l.intersectsBox(o)) }; if (i(0, 0)) return { x: 0, z: 0 }; for (let r = 1; r < 7; r++) { let s = r * 26; for (let a = 0; a < r * 8; a++) { let o = a / (r * 8) * Math.PI * 2, l = Math.round(Math.cos(o) * s), c = Math.round(Math.sin(o) * s); if (i(l, c)) return { x: l, z: c } } } return { x: 0, z: 0 } } /*   Создание mesh фигуры: kf=геометрия, W1=материал (MeshStandardMaterial), le=Mesh из Three.js   */
@@ -4253,10 +4276,33 @@ bool _bvhIntersectFirstHit(
 		return mesh;
 	}
 
+	function sanitizeFileName(n) {
+		var s = String(n || ""), out = "", i, ch, low;
+		var bad = "\\/:*?" + '"' + "<>|";
+		for (i = 0; i < s.length; i++) {
+			ch = s.charAt(i);
+			out += bad.indexOf(ch) >= 0 ? " " : ch;
+		}
+		while (out.indexOf("  ") >= 0) out = out.split("  ").join(" ");
+		out = out.trim();
+		low = out.toLowerCase();
+		if (low.length >= 5 && low.slice(low.length - 5) === ".json") out = out.slice(0, out.length - 5);
+		else if (low.length >= 4 && low.slice(low.length - 4) === ".stl") out = out.slice(0, out.length - 4);
+		return out.slice(0, 60);
+	}
+	var lastFileName = "Мой проект";
+	function askFileName(ext) {
+		var raw = prompt("Имя файла:", lastFileName);
+		if (raw === null) return null;
+		var name = sanitizeFileName(raw) || lastFileName || "проект";
+		lastFileName = name;
+		return name + ext;
+	}
+
 	function buildProjectJSON() {
 		return {
 			version: 1,
-			name: "YesCoding3D project",
+			name: lastFileName || "YesCoding3D project",
 			savedAt: new Date().toISOString(),
 			figures: sa().map(serializeObj)
 		};
@@ -4269,13 +4315,16 @@ bool _bvhIntersectFirstHit(
 			ki("На площадке нет фигур для сохранения", !0);
 			return;
 		}
+		let fname = askFileName(".json");
+		if (!fname) return;
+		data.name = lastFileName;
 		let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
 		let a = document.createElement("a");
 		a.href = URL.createObjectURL(blob);
-		a.download = "yescoding3d-project.json";
+		a.download = fname;
 		a.click();
 		URL.revokeObjectURL(a.href);
-		ki("Проект сохранён (JSON)");
+		ki("Сохранено: " + fname);
 	}
 
 	/*   Загрузить проект из .json файла   */
@@ -4292,6 +4341,7 @@ bool _bvhIntersectFirstHit(
 				Hi(aa(old, created));
 				bg();
 				Zn([]);
+				if (data.name) lastFileName = sanitizeFileName(data.name) || lastFileName;
 				ki("Проект открыт: " + created.length + " объект(ов)");
 			} catch (err) {
 				console.error(err);
@@ -4383,9 +4433,9 @@ bool _bvhIntersectFirstHit(
 
 	/*   Экспорт сцены в STL (STLExporter = Ch из бандла Three.js)   */
 
-	function _g() { let n = sa().filter(a => !a.userData.isHole); if (!n.length) return ki("\u041D\u0430 \u043F\u043B\u043E\u0449\u0430\u0434\u043A\u0435 \u043D\u0435\u0442 \u0444\u0438\u0433\u0443\u0440 \u0434\u043B\u044F \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0430", !0), 0; let e = n.map(a => { let o = a.geometry.clone(); o.index && (o = o.toNonIndexed()); for (let l of Object.keys(o.attributes)) l !== "position" && l !== "normal" && o.deleteAttribute(l); return a.updateMatrixWorld(!0), o.applyMatrix4(a.matrixWorld), o }), t = Gm(e, !1); t.rotateX(Math.PI / 2); let i = new Ch().parse(new le(t), { binary: !0 }), r = new Blob([i], { type: "model/stl" }), s = document.createElement("a"); return s.href = URL.createObjectURL(r), s.download = `yescoding3d-${new Date().toISOString().slice(0, 10)}.stl`, s.click(), setTimeout(() => URL.revokeObjectURL(s.href), 4e3), ki("STL \u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D \u2014 \u043C\u043E\u0436\u043D\u043E \u043F\u0435\u0447\u0430\u0442\u0430\u0442\u044C!"), i.byteLength } var S4 = [["std", "\u0421\u0442\u0430\u043D\u0434\u0430\u0440\u0442"], ["forms", "\u0424\u043E\u0440\u043C\u044B"], ["decor", "\u0414\u0435\u043A\u043E\u0440"], ["chars", "\u0411\u0443\u043A\u0432\u044B"]], pg = Mt("lib-tabs"), Nf = Mt("lib-body"), j1 = {}; /*   Превью-иконки фигур в библиотеке (offscreen WebGLRenderer)   */
-	function M4() { let n = new Ds({ antialias: !0, alpha: !0, preserveDrawingBuffer: !0 }); n.setSize(132, 132); let e = new Us; e.add(new Ws(16777215, 13623536, 1.2)); let t = new zr(16777215, 1.9); t.position.set(3, 5, 4), e.add(t); let i = new Bt(30, 1, .1, 100), r = { std: 4886754, forms: 1752220, decor: 16098851 }; for (let s in _r) { if (s === "text") continue; let a = kf(s, Y1(s)), o = new le(a, W1(r[_r[s].cat] ?? 4886754)); e.add(o); let l = a.boundingBox.getBoundingSphere(new Nt).radius; i.position.set(l * 2.1, l * 1.7, l * 2.1), i.lookAt(0, 0, 0), n.render(e, i), j1[s] = n.domElement.toDataURL(), e.remove(o), a.dispose() } n.dispose() } /*   Вкладки библиотеки: Стандарт / Формы / Декор / Буквы   */
-	function T4() { pg.innerHTML = ""; for (let [n, e] of S4) { let t = document.createElement("button"); t.className = "lib-tab", t.textContent = e, t.dataset.cat = n, t.onclick = () => O1(n), pg.appendChild(t) } O1("std") } function O1(n) { if ([...pg.children].forEach(t => t.classList.toggle("on", t.dataset.cat === n)), Nf.innerHTML = "", n === "chars") return E4(); let e = document.createElement("div"); e.className = "shape-grid"; for (let t in _r) { if (_r[t].cat !== n) continue; let i = document.createElement("button"); i.className = "shape-btn", i.innerHTML = `<img src="${j1[t]}" alt=""><span>${_r[t].name}</span>`, i.onclick = () => K1(t), e.appendChild(i) } Nf.appendChild(e) } function E4() { let n = document.createElement("div"); n.className = "lib-sub", n.textContent = "\u0421\u0432\u043E\u044F \u043D\u0430\u0434\u043F\u0438\u0441\u044C"; let e = document.createElement("div"); e.className = "text-row"; let t = document.createElement("input"); t.placeholder = "\u041D\u0430\u043F\u0440\u0438\u043C\u0435\u0440: \u041F\u0420\u0418\u0412\u0415\u0422", t.maxLength = 16; let i = document.createElement("button"); i.textContent = "+", i.title = "\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C", i.className = "text-add"; let r = () => { t.value.trim() && (dg(t.value.trim()), t.value = "") }; i.onclick = r, t.addEventListener("keydown", a => { a.key === "Enter" && r(), a.stopPropagation() }), e.append(t, i), Nf.append(n, e); let s = [["\u0420\u0443\u0441\u0441\u043A\u0438\u0435 \u0431\u0443\u043A\u0432\u044B", "\u0410\u0411\u0412\u0413\u0414\u0415\u0401\u0416\u0417\u0418\u0419\u041A\u041B\u041C\u041D\u041E\u041F\u0420\u0421\u0422\u0423\u0424\u0425\u0426\u0427\u0428\u0429\u042A\u042B\u042C\u042D\u042E\u042F"], ["\u0410\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438\u0435 \u0431\u0443\u043A\u0432\u044B", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"], ["\u0426\u0438\u0444\u0440\u044B", "0123456789"]]; for (let [a, o] of s) { let l = document.createElement("div"); l.className = "lib-sub", l.textContent = a; let c = document.createElement("div"); c.className = "char-grid"; for (let u of o) { let f = document.createElement("button"); f.className = "char-btn", f.textContent = u, f.onclick = () => dg(u), c.appendChild(f) } Nf.append(l, c) } } var Pt = Mt("insp-body"), Si = null;
+	function _g() { let n = sa().filter(a => !a.userData.isHole); if (!n.length) return ki("\u041D\u0430 \u043F\u043B\u043E\u0449\u0430\u0434\u043A\u0435 \u043D\u0435\u0442 \u0444\u0438\u0433\u0443\u0440 \u0434\u043B\u044F \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0430", !0), 0; let stlName = askFileName(".stl"); if (!stlName) return 0; let e = n.map(a => { let o = a.geometry.clone(); o.index && (o = o.toNonIndexed()); for (let l of Object.keys(o.attributes)) l !== "position" && l !== "normal" && o.deleteAttribute(l); return a.updateMatrixWorld(!0), o.applyMatrix4(a.matrixWorld), o }), t = Gm(e, !1); t.rotateX(Math.PI / 2); let i = new Ch().parse(new le(t), { binary: !0 }), r = new Blob([i], { type: "model/stl" }), s = document.createElement("a"); return s.href = URL.createObjectURL(r), s.download = stlName, s.click(), setTimeout(() => URL.revokeObjectURL(s.href), 4e3), ki("STL \u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D \u2014 \u043C\u043E\u0436\u043D\u043E \u043F\u0435\u0447\u0430\u0442\u0430\u0442\u044C!"), i.byteLength } var S4 = [["std", "\u0421\u0442\u0430\u043D\u0434\u0430\u0440\u0442"], ["forms", "\u0424\u043E\u0440\u043C\u044B"], ["decor", "\u0414\u0435\u043A\u043E\u0440"], ["chars", "\u0411\u0443\u043A\u0432\u044B"], ["tools", "\u0418\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u044B"]], pg = Mt("lib-tabs"), Nf = Mt("lib-body"), j1 = {}; /*   Превью-иконки фигур в библиотеке (offscreen WebGLRenderer)   */
+	function M4() { let n = new Ds({ antialias: !0, alpha: !0, preserveDrawingBuffer: !0 }); n.setSize(132, 132); let e = new Us; e.add(new Ws(16777215, 13623536, 1.2)); let t = new zr(16777215, 1.9); t.position.set(3, 5, 4), e.add(t); let i = new Bt(30, 1, .1, 100), r = { std: 4886754, forms: 1752220, decor: 16098851, tools: 16098851 }; for (let s in _r) { if (s === "text") continue; let a = kf(s, Y1(s)), o = new le(a, W1(r[_r[s].cat] ?? 4886754)); e.add(o); let l = a.boundingBox.getBoundingSphere(new Nt).radius; i.position.set(l * 2.1, l * 1.7, l * 2.1), i.lookAt(0, 0, 0), n.render(e, i), j1[s] = n.domElement.toDataURL(), e.remove(o), a.dispose() } n.dispose() } /*   Вкладки библиотеки: Стандарт / Формы / Декор / Буквы   */
+	function T4() { pg.innerHTML = ""; for (let [n, e] of S4) { let t = document.createElement("button"); t.className = "lib-tab", t.textContent = e, t.dataset.cat = n, t.onclick = () => O1(n), pg.appendChild(t) } O1("std") } function O1(n) { if ([...pg.children].forEach(t => t.classList.toggle("on", t.dataset.cat === n)), Nf.innerHTML = "", n === "chars") return E4(); let e = document.createElement("div"); e.className = "shape-grid"; for (let t in _r) { if (_r[t].cat !== n) continue; let i = document.createElement("button"); i.className = "shape-btn", i.innerHTML = `<img src="${j1[t]}" alt=""><span>${_r[t].name}</span>`, i.onclick = () => (t === "bezier" ? openBezierEditor() : K1(t)), e.appendChild(i) } Nf.appendChild(e) } function E4() { let n = document.createElement("div"); n.className = "lib-sub", n.textContent = "\u0421\u0432\u043E\u044F \u043D\u0430\u0434\u043F\u0438\u0441\u044C"; let e = document.createElement("div"); e.className = "text-row"; let t = document.createElement("input"); t.placeholder = "\u041D\u0430\u043F\u0440\u0438\u043C\u0435\u0440: \u041F\u0420\u0418\u0412\u0415\u0422", t.maxLength = 16; let i = document.createElement("button"); i.textContent = "+", i.title = "\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C", i.className = "text-add"; let r = () => { t.value.trim() && (dg(t.value.trim()), t.value = "") }; i.onclick = r, t.addEventListener("keydown", a => { a.key === "Enter" && r(), a.stopPropagation() }), e.append(t, i), Nf.append(n, e); let s = [["\u0420\u0443\u0441\u0441\u043A\u0438\u0435 \u0431\u0443\u043A\u0432\u044B", "\u0410\u0411\u0412\u0413\u0414\u0415\u0401\u0416\u0417\u0418\u0419\u041A\u041B\u041C\u041D\u041E\u041F\u0420\u0421\u0422\u0423\u0424\u0425\u0426\u0427\u0428\u0429\u042A\u042B\u042C\u042D\u042E\u042F"], ["\u0410\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438\u0435 \u0431\u0443\u043A\u0432\u044B", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"], ["\u0426\u0438\u0444\u0440\u044B", "0123456789"]]; for (let [a, o] of s) { let l = document.createElement("div"); l.className = "lib-sub", l.textContent = a; let c = document.createElement("div"); c.className = "char-grid"; for (let u of o) { let f = document.createElement("button"); f.className = "char-btn", f.textContent = u, f.onclick = () => dg(u), c.appendChild(f) } Nf.append(l, c) } } var Pt = Mt("insp-body"), Si = null;
 	/*   Обновление панели инспектора   */
 	function ls() {
 		if (Si = null, !ot.length) {
@@ -4424,9 +4474,246 @@ bool _bvhIntersectFirstHit(
 		n.target.value = "";
 	});
 	/*   Загрузка STL убрана из UI — проект хранится в JSON   */
- Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-cycle").onclick = cycleMode; Mo("translate"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(), saveProjectJSON()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "Tab" ? (n.preventDefault(), cycleMode()) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || Zn([])) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
+ Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-cycle").onclick = cycleMode; Mo("translate"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(), saveProjectJSON()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "Tab" ? (n.preventDefault(), cycleMode()) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "KeyB" ? (n.preventDefault(), setBoxSelect(!boxSelectMode)) : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || closeBezierEditor() || Zn([]) || setBoxSelect(!1)) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
 	/*   Главный цикл рендера   */
-	function tS() { requestAnimationFrame(tS); let n = C4.getDelta(); if (xr) { xr.t = Math.min(1, xr.t + n / .45); let e = 1 - Math.pow(1 - xr.t, 3); Vi.position.lerpVectors(xr.from, xr.to, e), xr.t >= 1 && (xr = null) } Mr.update(), ac.animating && ac.update(n); for (let [e, t] of Df) e.parent === Vt && t.update(); os.clear(), os.render(Vt, Vi), ac.render(os) } M4(); T4(); ls(); hc(); tS(); requestAnimationFrame(() => Mt("loading").classList.add("hidden"));
+	function tS() { requestAnimationFrame(tS); let n = C4.getDelta(); if (xr) { xr.t = Math.min(1, xr.t + n / .45); let e = 1 - Math.pow(1 - xr.t, 3); Vi.position.lerpVectors(xr.from, xr.to, e), xr.t >= 1 && (xr = null) } Mr.update(), ac.animating && ac.update(n); for (let [e, t] of Df) e.parent === Vt && t.update(); os.clear(), os.render(Vt, Vi), ac.render(os) } 
+	
+	/* === extras: выделение рамкой === */
+	var boxSelectMode = !1;
+	var mqDrag = null;
+
+	function mqRect(a, b) {
+		return { left: Math.min(a.x, b.x), top: Math.min(a.y, b.y), right: Math.max(a.x, b.x), bottom: Math.max(a.y, b.y) };
+	}
+	function showMarquee(r) {
+		var el = Mt("marquee");
+		if (!el) return;
+		var vp = D1.getBoundingClientRect();
+		el.classList.remove("hidden");
+		el.style.left = (r.left - vp.left) + "px";
+		el.style.top = (r.top - vp.top) + "px";
+		el.style.width = (r.right - r.left) + "px";
+		el.style.height = (r.bottom - r.top) + "px";
+	}
+	function hideMarquee() {
+		var el = Mt("marquee");
+		if (el) el.classList.add("hidden");
+	}
+	function objectsInMarquee(r) {
+		var canvas = Sr.getBoundingClientRect();
+		var out = [];
+		var v = new E();
+		sa().forEach(function (obj) {
+			if (!obj.visible) return;
+			obj.updateWorldMatrix(!0, !0);
+			if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox();
+			var bb = obj.geometry.boundingBox;
+			var xs = [bb.min.x, bb.max.x], ys = [bb.min.y, bb.max.y], zs = [bb.min.z, bb.max.z];
+			var minx = 1e9, miny = 1e9, maxx = -1e9, maxy = -1e9, behind = 0;
+			for (var i = 0; i < 2; i++) for (var j = 0; j < 2; j++) for (var k = 0; k < 2; k++) {
+				v.set(xs[i], ys[j], zs[k]).applyMatrix4(obj.matrixWorld).project(Vi);
+				if (v.z > 1) { behind++; continue; }
+				var sx = (v.x * .5 + .5) * canvas.width + canvas.left;
+				var sy = (-v.y * .5 + .5) * canvas.height + canvas.top;
+				if (sx < minx) minx = sx; if (sy < miny) miny = sy;
+				if (sx > maxx) maxx = sx; if (sy > maxy) maxy = sy;
+			}
+			if (behind === 8) return;
+			if (maxx < r.left || minx > r.right || maxy < r.top || miny > r.bottom) return;
+			out.push(obj);
+		});
+		return out;
+	}
+	function setBoxSelect(on) {
+		boxSelectMode = !!on;
+		var btn = Mt("btn-box");
+		if (btn) btn.classList.toggle("on", boxSelectMode);
+		if (boxSelectMode) ki("Рамка: зажми и протяни по сцене");
+	}
+	function finishMarquee(ev) {
+		if (!mqDrag) return;
+		var r = mqRect(mqDrag, { x: ev.clientX, y: ev.clientY });
+		var big = Math.hypot(ev.clientX - mqDrag.x, ev.clientY - mqDrag.y) > 6;
+		hideMarquee();
+		Mr.enabled = !0;
+		if (big) {
+			var picked = objectsInMarquee(r);
+			if (mqDrag.add) {
+				var set = new Set(ot);
+				picked.forEach(function (o) { set.add(o); });
+				Zn([...set]);
+			} else Zn(picked);
+			ki(picked.length ? ("Выделено: " + picked.length) : "В рамке никого");
+		}
+		mqDrag = null;
+		setBoxSelect(!1);
+		So = null;
+	}
+	function wireBoxSelect() {
+		var bb = Mt("btn-box");
+		if (bb) bb.onclick = function () { setBoxSelect(!boxSelectMode); };
+		addEventListener("pointermove", function (ev) {
+			if (!mqDrag) return;
+			showMarquee(mqRect(mqDrag, { x: ev.clientX, y: ev.clientY }));
+		});
+		addEventListener("pointerup", function (ev) {
+			if (mqDrag) finishMarquee(ev);
+		});
+	}
+	Sr.addEventListener("pointerdown", function (n) {
+		if (n.button !== 0) return;
+		var e = Sr.getBoundingClientRect();
+		if (n.clientX > e.right - 128 && n.clientY > e.bottom - 128) return;
+		if (Lt.axis || Lt.dragging) return;
+		var hit = Z1(n);
+		var wantBox = boxSelectMode || ((n.ctrlKey || n.metaKey || n.altKey) && !hit);
+		if (!wantBox) return;
+		n.stopPropagation();
+		n.preventDefault();
+		mqDrag = { x: n.clientX, y: n.clientY, add: n.shiftKey || n.ctrlKey || n.metaKey };
+		Mr.enabled = !1;
+		showMarquee(mqRect(mqDrag, mqDrag));
+		So = null;
+	}, !0);
+
+	
+	var bz = { pts: BZ_DEFAULT.map(function (p) { return { x: p.x, y: p.y }; }), depth: 8, drag: -1, over: -1 };
+	function bzMap(cv, mx, my) {
+		var r = cv.getBoundingClientRect();
+		var x = (mx - r.left) / r.width;
+		var y = (my - r.top) / r.height;
+		return { x: (x - .5) * 80, y: (.5 - y) * 56 };
+	}
+	function bzHit(cv, mx, my) {
+		var p = bzMap(cv, mx, my);
+		var best = -1, bd = 3.2;
+		bz.pts.forEach(function (pt, i) {
+			var d = Math.hypot(pt.x - p.x, pt.y - p.y);
+			if (d < bd) { bd = d; best = i; }
+		});
+		return best;
+	}
+	function drawBezier() {
+		var cv = Mt("bz-canvas");
+		if (!cv) return;
+		var ctx = cv.getContext("2d");
+		var w = cv.width, h = cv.height;
+		ctx.clearRect(0, 0, w, h);
+		ctx.fillStyle = "#f7fbff";
+		ctx.fillRect(0, 0, w, h);
+		ctx.strokeStyle = "#dde8f2";
+		ctx.lineWidth = 1;
+		for (var gx = 0; gx <= 8; gx++) {
+			ctx.beginPath(); ctx.moveTo(gx / 8 * w, 0); ctx.lineTo(gx / 8 * w, h); ctx.stroke();
+		}
+		for (var gy = 0; gy <= 6; gy++) {
+			ctx.beginPath(); ctx.moveTo(0, gy / 6 * h); ctx.lineTo(w, gy / 6 * h); ctx.stroke();
+		}
+		ctx.strokeStyle = "#c4dcf5";
+		ctx.beginPath(); ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke();
+		function toS(pt) { return { x: (pt.x / 80 + .5) * w, y: (.5 - pt.y / 56) * h }; }
+		var pts = bz.pts, n = pts.length;
+		if (n >= 2) {
+			ctx.strokeStyle = "#4A90E2";
+			ctx.lineWidth = 3;
+			ctx.beginPath();
+			var s0 = toS(pts[0]);
+			ctx.moveTo(s0.x, s0.y);
+			if (n >= 3) {
+				for (var i = 0; i < n; i++) {
+					var p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+					var c1 = toS({ x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 });
+					var c2 = toS({ x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 });
+					var e2 = toS(p2);
+					ctx.bezierCurveTo(c1.x, c1.y, c2.x, c2.y, e2.x, e2.y);
+				}
+			} else {
+				var s1 = toS(pts[1]);
+				ctx.lineTo(s1.x, s1.y);
+			}
+			ctx.closePath();
+			ctx.fillStyle = "rgba(74,144,226,.16)";
+			ctx.fill();
+			ctx.stroke();
+		}
+		pts.forEach(function (pt, i) {
+			var s = toS(pt);
+			ctx.beginPath();
+			ctx.arc(s.x, s.y, i === bz.over || i === bz.drag ? 7 : 5.5, 0, Math.PI * 2);
+			ctx.fillStyle = i === bz.drag ? "#F5A623" : "#4A90E2";
+			ctx.fill();
+			ctx.strokeStyle = "#fff";
+			ctx.lineWidth = 2;
+			ctx.stroke();
+		});
+	}
+	function openBezierEditor() {
+		bz.pts = BZ_DEFAULT.map(function (p) { return { x: p.x, y: p.y }; });
+		bz.depth = 8;
+		bz.drag = -1;
+		var overlay = Mt("bezier-overlay");
+		if (overlay) overlay.classList.remove("hidden");
+		var d = Mt("bz-depth");
+		if (d) d.value = 8;
+		var o = Mt("bz-depth-out");
+		if (o) o.textContent = "8";
+		drawBezier();
+	}
+	function closeBezierEditor() {
+		var overlay = Mt("bezier-overlay");
+		if (!overlay || overlay.classList.contains("hidden")) return !1;
+		overlay.classList.add("hidden");
+		return !0;
+	}
+	function extrudeBezier() {
+		if (bz.pts.length < 3) { ki("Нужно минимум 3 точки", !0); return; }
+		var depth = parseFloat((Mt("bz-depth") || {}).value) || 8;
+		var mesh = q1("bezier", { pts: bz.pts.map(function (p) { return { x: p.x, y: p.y }; }), depth: depth });
+		Hi(aa([], [mesh]));
+		Zn([mesh]);
+		closeBezierEditor();
+		ki("Кривая выдавлена");
+	}
+	function bindBezierCanvas() {
+		var cv = Mt("bz-canvas");
+		if (!cv || cv._bzBound) return;
+		cv._bzBound = !0;
+		cv.addEventListener("pointerdown", function (ev) {
+			ev.preventDefault();
+			var hit = bzHit(cv, ev.clientX, ev.clientY);
+			if (hit >= 0) bz.drag = hit;
+			else {
+				bz.pts.push(bzMap(cv, ev.clientX, ev.clientY));
+				bz.drag = bz.pts.length - 1;
+			}
+			drawBezier();
+		});
+		cv.addEventListener("pointermove", function (ev) {
+			if (bz.drag < 0) { bz.over = bzHit(cv, ev.clientX, ev.clientY); drawBezier(); return; }
+			bz.pts[bz.drag] = bzMap(cv, ev.clientX, ev.clientY);
+			drawBezier();
+		});
+		cv.addEventListener("pointerup", function () { bz.drag = -1; drawBezier(); });
+		cv.addEventListener("pointerleave", function () { bz.drag = -1; bz.over = -1; drawBezier(); });
+		cv.addEventListener("dblclick", function (ev) {
+			var hit = bzHit(cv, ev.clientX, ev.clientY);
+			if (hit >= 0 && bz.pts.length > 3) { bz.pts.splice(hit, 1); drawBezier(); }
+		});
+		var bzc = Mt("btn-bz-cancel");
+		if (bzc) bzc.onclick = closeBezierEditor;
+		var bze = Mt("btn-bz-extrude");
+		if (bze) bze.onclick = extrudeBezier;
+		var bzu = Mt("btn-bz-undo");
+		if (bzu) bzu.onclick = function () { if (bz.pts.length) { bz.pts.pop(); drawBezier(); } };
+		var bzr = Mt("btn-bz-reset");
+		if (bzr) bzr.onclick = function () { bz.pts = BZ_DEFAULT.map(function (p) { return { x: p.x, y: p.y }; }); drawBezier(); };
+		var dz = Mt("bz-depth");
+		if (dz) dz.addEventListener("input", function () { var o = Mt("bz-depth-out"); if (o) o.textContent = dz.value; });
+	}
+
+	bindBezierCanvas();
+	wireBoxSelect();
+	M4(); T4(); ls(); hc(); tS(); requestAnimationFrame(() => Mt("loading").classList.add("hidden"));
 	/*   Публичный API (window.app)   */
 	window.app = { addShape: K1, addText: dg, loadSTL: loadSTLFile, saveProject: saveProjectJSON, loadProject: loadProjectJSON, buildProjectJSON: buildProjectJSON, select: Zn, selectAll: () => Zn(sa()), group: cc, ungroup: () => uc(), setHole: (n, e) => Q1(n, e), del: xg, dup: yg, undo: gg, redo: Uf, exportSTLBytes: _g, objects: sa, THREE: Bm };
 })();

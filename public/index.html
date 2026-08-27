@@ -80,6 +80,10 @@
           <span id="mode-label">Двигать</span>
         </button>
       </div>
+      <span class="tb-sep"></span>
+      <div class="tb-group">
+        <button id="btn-box" class="tb" title="Выделить рамкой (B или Ctrl+перетаскивание)">Рамка</button>
+      </div>
     </header>
 
     <!-- Левая панель: библиотека фигур -->
@@ -94,6 +98,7 @@
     <main id="viewport">
       <!-- Canvas для WebGL-рендера -->
       <canvas id="gl"></canvas>
+      <div id="marquee" class="hidden"></div>
 
       <!-- Кнопки смены вида камеры -->
       <div id="view-chips">
@@ -120,6 +125,7 @@
     <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
     <footer id="statusbar">
       <span><b>G</b>/<b>R</b>/<b>S</b> трансформ</span><span><b>Tab</b> смена режима</span>
+      <span><b>B</b> / <b>Ctrl+тяг</b> рамка</span>
       <span><b>D</b> на плоскость</span><span><b>Ctrl+S</b> сохранить</span><span><b>Ctrl+E</b> печать</span><span><b>Ctrl+D</b> копия</span>
       <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
       <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
@@ -168,11 +174,10 @@
         return;
       }
 
+      var bootGuard = true;
+      setTimeout(function () { bootGuard = false; }, 8000);
       window.addEventListener("error", function (e) {
-        showFatal("Произошла непредвиденная ошибка, и редактор не может продолжить работу. Попробуйте обновить страницу.");
-      });
-      window.addEventListener("unhandledrejection", function (e) {
-        showFatal("Произошла непредвиденная ошибка, и редактор не может продолжить работу. Попробуйте обновить страницу.");
+        if (bootGuard) showFatal("Произошла непредвиденная ошибка при запуске. Попробуйте обновить страницу.");
       });
 
       if (typeof Uint8Array.fromBase64 !== "function") {
