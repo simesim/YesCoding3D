@@ -534,6 +534,7 @@ input {
   border-top: 1px solid var(--line);
   font-size: 11.5px;
   color: var(--gray);
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -551,8 +552,7 @@ input {
   transition: opacity .3s;
 }
 #loading.hidden {
-  opacity: 0;
-  visibility: hidden;
+  display: none;
 }
 .load-card {
   display: flex;
