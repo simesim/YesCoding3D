@@ -99,6 +99,8 @@
       <!-- Canvas для WebGL-рендера -->
       <canvas id="gl"></canvas>
       <div id="marquee" class="hidden"></div>
+      <div id="ruler-hint" class="hidden">Линейка: кликни две точки · Esc — выход</div>
+      <div id="ruler-label" class="hidden"></div>
 
       <!-- Кнопки смены вида камеры -->
       <div id="view-chips">
@@ -125,11 +127,28 @@
     <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
     <footer id="statusbar">
       <span><b>G</b>/<b>R</b>/<b>S</b> трансформ</span><span><b>Tab</b> смена режима</span>
-      <span><b>B</b> / <b>Ctrl+тяг</b> рамка</span>
+      <span><b>B</b> / <b>Ctrl+тяг</b> рамка</span><span><b>L</b> линейка</span><span>сетка 1 / 10 мм · поле 200 мм</span>
       <span><b>D</b> на плоскость</span><span><b>Ctrl+S</b> сохранить</span><span><b>Ctrl+E</b> печать</span><span><b>Ctrl+D</b> копия</span>
       <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
       <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
     </footer>
+
+    <div id="bezier-overlay" class="hidden">
+      <div class="bz-card">
+        <h2 id="bz-title">Кривая Безье</h2>
+        <p class="bz-hint" id="bz-hint">Синие точки — якоря. Оранжевые квадраты — ручки. Наложение контура вырежет дырку.</p>
+        <canvas id="bz-canvas" width="640" height="420"></canvas>
+        <div class="bz-row">
+          <label>Высота, мм <input id="bz-depth" type="range" min="2" max="40" value="8"> <output id="bz-depth-out">8</output></label>
+        </div>
+        <div class="bz-actions">
+          <button type="button" id="btn-bz-reset" class="tb">Сбросить</button>
+          <button type="button" id="btn-bz-undo" class="tb">Убрать точку</button>
+          <button type="button" id="btn-bz-cancel" class="tb">Отмена</button>
+          <button type="button" id="btn-bz-extrude" class="tb tb-primary">Выдавить</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Экран загрузки при старте -->
     <div id="loading">
