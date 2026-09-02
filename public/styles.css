@@ -756,3 +756,35 @@ input {
   font-weight: 500;
 }
 #scale-legend { display: none; }
+
+
+#mirror-overlay, #array-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(30, 48, 68, .38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+#mirror-overlay.hidden, #array-overlay.hidden { display: none; }
+#array-mode {
+  flex: 1;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 8px;
+  background: #f7fbff;
+}
+
+.vase-sliders { margin: 10px 0 6px; }
+.vase-sliders label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin: 6px 0;
+}
+.vase-sliders input { flex: 1; }
+.vase-sliders output { min-width: 28px; font-weight: 700; color: var(--blue); }

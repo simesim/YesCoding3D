@@ -4155,7 +4155,7 @@ bool _bvhIntersectFirstHit(
 		return as(new Sn(shapeFromRing(flat), Object.assign({ depth: depth, curveSegments: 8 }, Oi)));
 	}
 
-		/* Каталог фигур */
+	/* Каталог фигур */
 	var _r = {
 		box: { name: "\u041A\u0443\u0431", cat: "std", make: () => new vt(20, 20, 20) },
 		sphere: { name: "\u0421\u0444\u0435\u0440\u0430", cat: "std", params: { seg: { label: "\u0421\u0435\u0433\u043C\u0435\u043D\u0442\u044B", min: 8, max: 64, step: 4, def: 32 } }, make: n => new Pi(10, n.seg, Math.max(6, n.seg >> 1)) },
@@ -4489,6 +4489,8 @@ bool _bvhIntersectFirstHit(
 		[
 			["poly", "Произвольная", "Контур из прямых отрезков. Кликаешь точки — получается многоугольник."],
 			["bezier", "Кривая Безье", "Гладкий контур. Синие точки — якоря, оранжевые квадраты — ручки изгиба."],
+			["mirror", "Зеркало копии", "Копия выделенного, отражённая относительно оси сцены."],
+			["array", "Массив", "Несколько копий в ряд или по кругу."],
 			["ruler", "Линейка", "Две точки на сцене — расстояние в миллиметрах."]
 		].forEach(function (row) {
 			var b = document.createElement("button");
@@ -4496,6 +4498,8 @@ bool _bvhIntersectFirstHit(
 			b.innerHTML = "<div class=\"tool-row-title\">" + row[1] + "</div><div class=\"tool-row-desc\">" + row[2] + "</div>";
 			b.onclick = function () {
 				if (row[0] === "ruler") startRuler();
+				else if (row[0] === "mirror") openMirrorPanel();
+				else if (row[0] === "array") openArrayPanel();
 				else openCurveEditor(row[0]);
 			};
 			wrap.appendChild(b);
@@ -4540,7 +4544,7 @@ bool _bvhIntersectFirstHit(
 		n.target.value = "";
 	});
 	/*   Загрузка STL убрана из UI — проект хранится в JSON   */
- Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-cycle").onclick = cycleMode; Mo("translate"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(), saveProjectJSON()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "Tab" ? (n.preventDefault(), cycleMode()) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "KeyB" ? (n.preventDefault(), setBoxSelect(!boxSelectMode)) : n.code === "KeyL" ? (n.preventDefault(), ruler.on ? cancelRuler() : startRuler()) : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || closeBezierEditor() || cancelRuler() || Zn([]) || setBoxSelect(!1)) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
+ Mt("btn-undo").onclick = gg; Mt("btn-redo").onclick = Uf; Mt("btn-dup").onclick = yg; Mt("btn-del").onclick = xg; Mt("btn-group").onclick = cc; Mt("btn-ungroup").onclick = () => uc(); Mt("mode-cycle").onclick = cycleMode; Mo("translate"); var xr = null, w4 = { iso: [170, 150, 170], top: [.01, 320, .01], front: [0, 60, 300], side: [300, 60, 0] }; document.querySelectorAll(".chip").forEach(n => n.onclick = () => { let e = w4[n.dataset.view]; xr = { from: Vi.position.clone(), to: new E(...e), t: 0 } }); addEventListener("keydown", n => { let e = n.target.tagName; if (e === "INPUT" || e === "TEXTAREA") return; let t = n.ctrlKey || n.metaKey; t && n.code === "KeyZ" ? (n.preventDefault(), n.shiftKey ? Uf() : gg()) : t && n.code === "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) : t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code === "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(), saveProjectJSON()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code === "Tab" ? (n.preventDefault(), cycleMode()) : n.code === "KeyG" ? Mo("translate") : n.code === "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n.code === "KeyB" ? (n.preventDefault(), setBoxSelect(!boxSelectMode)) : n.code === "KeyL" ? (n.preventDefault(), ruler.on ? cancelRuler() : startRuler()) : n.code === "Delete" || n.code === "Backspace" ? xg() : n.code === "Escape" && (b4() || closeBezierEditor() || closeMirrorPanel() || closeArrayPanel() || cancelRuler() || Zn([]) || setBoxSelect(!1)) }); var H1 = null; function ki(n, e) { let t = Mt("toast"); t.textContent = n, t.className = e ? "warn" : "", clearTimeout(H1), H1 = setTimeout(() => t.classList.add("hidden"), 2300) } var C4 = new qa; function eS() { let n = D1.clientWidth, e = D1.clientHeight; os.setSize(n, e, !1), Vi.aspect = n / e, Vi.updateProjectionMatrix() } addEventListener("resize", eS); eS();
 	/*   Главный цикл рендера   */
 	function tS() { requestAnimationFrame(tS); let n = C4.getDelta(); if (xr) { xr.t = Math.min(1, xr.t + n / .45); let e = 1 - Math.pow(1 - xr.t, 3); Vi.position.lerpVectors(xr.from, xr.to, e), xr.t >= 1 && (xr = null) } Mr.update(), ac.animating && ac.update(n); for (let [e, t] of Df) e.parent === Vt && t.update(); os.clear(), os.render(Vt, Vi), ac.render(os) } 
 	
@@ -4703,6 +4707,111 @@ bool _bvhIntersectFirstHit(
 		return !0;
 	}
 
+	
+
+	function cloneSel() {
+		return ot.map($1);
+	}
+	function openMirrorPanel() {
+		if (!ot.length) { ki("Сначала выдели фигуру", !0); return; }
+		var ov = Mt("mirror-overlay");
+		if (ov) ov.classList.remove("hidden");
+	}
+	function closeMirrorPanel() {
+		var ov = Mt("mirror-overlay");
+		if (!ov || ov.classList.contains("hidden")) return !1;
+		ov.classList.add("hidden");
+		return !0;
+	}
+	function applyMirror(axis) {
+		if (!ot.length) { ki("Нет выделения", !0); return; }
+		var copies = cloneSel();
+		copies.forEach(function (o) {
+			if (axis === "z") {
+				o.position.z = -o.position.z;
+				o.rotation.x = -o.rotation.x;
+				o.rotation.y = -o.rotation.y;
+				o.scale.z *= -1;
+			} else {
+				o.position.x = -o.position.x;
+				o.rotation.y = -o.rotation.y;
+				o.rotation.z = -o.rotation.z;
+				o.scale.x *= -1;
+			}
+		});
+		Hi(aa([], copies));
+		Zn(copies);
+		closeMirrorPanel();
+		ki("Зеркальная копия: ось " + axis.toUpperCase());
+	}
+	function openArrayPanel() {
+		if (!ot.length) { ki("Сначала выдели фигуру", !0); return; }
+		var ov = Mt("array-overlay");
+		if (ov) ov.classList.remove("hidden");
+	}
+	function closeArrayPanel() {
+		var ov = Mt("array-overlay");
+		if (!ov || ov.classList.contains("hidden")) return !1;
+		ov.classList.add("hidden");
+		return !0;
+	}
+	function applyArray() {
+		if (!ot.length) { ki("Нет выделения", !0); return; }
+		var modeEl = Mt("array-mode");
+		var countEl = Mt("array-count");
+		var stepEl = Mt("array-step");
+		var mode = modeEl ? modeEl.value : "row";
+		var count = Math.max(2, Math.min(24, parseInt(countEl && countEl.value, 10) || 4));
+		var step = parseFloat(stepEl && stepEl.value);
+		if (!(step > 0)) step = 20;
+		var extras = [];
+		var src = ot.slice();
+		var cx = 0, cz = 0;
+		src.forEach(function (o) { cx += o.position.x; cz += o.position.z; });
+		cx /= src.length; cz /= src.length;
+		for (var i = 1; i < count; i++) {
+			src.forEach(function (o) {
+				var c = $1(o);
+				if (mode === "circle") {
+					var ang = i / count * Math.PI * 2;
+					var dx = o.position.x - cx, dz = o.position.z - cz;
+					var rad = Math.hypot(dx, dz);
+					if (rad < 0.01) rad = step;
+					var a0 = Math.atan2(dz, dx);
+					c.position.x = cx + Math.cos(a0 + ang) * rad;
+					c.position.z = cz + Math.sin(a0 + ang) * rad;
+					c.rotation.y = o.rotation.y - ang;
+				} else {
+					c.position.x = o.position.x + step * i;
+				}
+				extras.push(c);
+			});
+		}
+		Hi(aa([], extras));
+		Zn(src.concat(extras));
+		closeArrayPanel();
+		ki("Массив: " + (extras.length + src.length) + " шт.");
+	}
+	function wireMirrorArray() {
+		var mx = Mt("btn-mirror-x");
+		if (mx) mx.onclick = function () { applyMirror("x"); };
+		var mz = Mt("btn-mirror-z");
+		if (mz) mz.onclick = function () { applyMirror("z"); };
+		var mc = Mt("btn-mirror-cancel");
+		if (mc) mc.onclick = closeMirrorPanel;
+		var ao = Mt("btn-array-ok");
+		if (ao) ao.onclick = applyArray;
+		var ac = Mt("btn-array-cancel");
+		if (ac) ac.onclick = closeArrayPanel;
+		[["array-count","array-count-out"],["array-step","array-step-out"]].forEach(function (pair) {
+			var el = Mt(pair[0]), out = Mt(pair[1]);
+			if (el && out && !el._arrBound) {
+				el._arrBound = !0;
+				el.addEventListener("input", function () { out.textContent = el.value; });
+			}
+		});
+	}
+
 	function wireBoxSelect() {
 		var bb = Mt("btn-box");
 		if (bb) bb.onclick = function () { setBoxSelect(!boxSelectMode); };
@@ -4845,9 +4954,16 @@ bool _bvhIntersectFirstHit(
 		var overlay = Mt("bezier-overlay");
 		if (overlay) overlay.classList.remove("hidden");
 		var d = Mt("bz-depth");
-		if (d) d.value = 8;
 		var o = Mt("bz-depth-out");
-		if (o) o.textContent = "8";
+		if (d) {
+			d.min = 2; d.max = 40; d.step = 1; d.value = 8;
+		}
+		if (o) o.textContent = d ? d.value : "8";
+		var lab = d && d.parentNode && d.parentNode.childNodes[0];
+		var rowLab = document.querySelector("#bezier-overlay .bz-row label");
+		if (rowLab && rowLab.firstChild && rowLab.firstChild.nodeType === 3) {
+			rowLab.firstChild.textContent = "Высота, мм ";
+		}
 		setCurveEditorCaption();
 		drawCurveEditor();
 	}
@@ -4860,7 +4976,7 @@ bool _bvhIntersectFirstHit(
 		return !0;
 	}
 	function extrudeCurve() {
-		if (bz.pts.length < 3) { ki("Нужно минимум 3 точки", !0); return; }
+if (bz.pts.length < 3) { ki("Нужно минимум 3 точки", !0); return; }
 		var depth = parseFloat((Mt("bz-depth") || {}).value) || 8;
 		var type = bz.mode === "poly" ? "poly" : "bezier";
 		var mesh = q1(type, { pts: clonePts(bz.pts), depth: depth });
@@ -4948,6 +5064,7 @@ bool _bvhIntersectFirstHit(
 	}
 
 	bindBezierCanvas();
+	wireMirrorArray();
 	wireBoxSelect();
 	M4(); T4(); ls(); hc(); tS(); requestAnimationFrame(() => Mt("loading").classList.add("hidden"));
 	/*   Публичный API (window.app)   */

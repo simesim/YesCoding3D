@@ -134,6 +134,37 @@
     </footer>
   </div>
 
+    <div id="mirror-overlay" class="hidden">
+      <div class="bz-card" style="width:min(420px,100%)">
+        <h2>Зеркало копии</h2>
+        <p class="bz-hint">Выделенные фигуры скопируются и отразятся от оси площадки (через центр сетки).</p>
+        <div class="bz-actions">
+          <button type="button" id="btn-mirror-cancel" class="tb">Отмена</button>
+          <button type="button" id="btn-mirror-z" class="tb">От оси Z</button>
+          <button type="button" id="btn-mirror-x" class="tb tb-primary">От оси X</button>
+        </div>
+      </div>
+    </div>
+    <div id="array-overlay" class="hidden">
+      <div class="bz-card" style="width:min(420px,100%)">
+        <h2>Массив</h2>
+        <p class="bz-hint">Копии выделенного. Ряд — вдоль X. Круг — вокруг центра выделения.</p>
+        <div class="vase-sliders">
+          <label>Тип
+            <select id="array-mode">
+              <option value="row">Ряд</option>
+              <option value="circle">Круг</option>
+            </select>
+          </label>
+          <label>Сколько <input id="array-count" type="range" min="2" max="16" step="1" value="4"> <output id="array-count-out">4</output></label>
+          <label>Шаг / радиус, мм <input id="array-step" type="range" min="8" max="80" step="1" value="24"> <output id="array-step-out">24</output></label>
+        </div>
+        <div class="bz-actions">
+          <button type="button" id="btn-array-cancel" class="tb">Отмена</button>
+          <button type="button" id="btn-array-ok" class="tb tb-primary">Размножить</button>
+        </div>
+      </div>
+    </div>
     <div id="bezier-overlay" class="hidden">
       <div class="bz-card">
         <h2 id="bz-title">Кривая Безье</h2>
