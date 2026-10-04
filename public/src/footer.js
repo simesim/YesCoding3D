@@ -1,0 +1,14 @@
+/* footer: закрытие обёртки и лицензии */
+})();
+/*! Bundled license information:
+
+three/build/three.module.js:
+  (**
+   * @license
+   * Copyright 2010-2023 Three.js Authors
+   * SPDX-License-Identifier: MIT
+   *)
+
+opentype.js/dist/opentype.module.js:
+  (*! https://mths.be/codepointat v0.2.0 by @mathias *)
+*/
