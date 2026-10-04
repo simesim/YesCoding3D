@@ -2,257 +2,271 @@
 <html lang="ru">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>YesCoding3D — 3D-редактор</title>
-  <meta name="description" content="YesCoding3D — браузерный 3D-редактор: собирайте модели из готовых фигур и текста, импортируйте и экспортируйте STL прямо в браузере.">
-  <meta name="theme-color" content="#4A90E2">
-  <meta name="robots" content="index,follow">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>YesCoding3D — 3D-редактор</title>
+    <meta name="description" content="YesCoding3D — браузерный 3D-редактор: собирайте модели из готовых фигур и текста, импортируйте и экспортируйте STL прямо в браузере.">
+    <meta name="theme-color" content="#4A90E2">
+    <meta name="robots" content="index,follow">
 
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="YesCoding3D — 3D-редактор">
-  <meta property="og:description" content="Браузерный 3D-редактор: собирайте модели из готовых фигур и текста, импортируйте и экспортируйте STL.">
-  <meta property="og:locale" content="ru_RU">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="YesCoding3D — 3D-редактор">
+    <meta property="og:description" content="Браузерный 3D-редактор: собирайте модели из готовых фигур и текста, импортируйте и экспортируйте STL.">
+    <meta property="og:locale" content="ru_RU">
 
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-
-  <link rel="stylesheet" href="fonts.css">
-
-  <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-  <div id="app">
+    <div id="app">
 
-    <!-- Верхняя панель инструментов -->
-    <header id="topbar">
+        <!-- Верхняя панель инструментов -->
+        <header id="topbar">
 
-      <!-- Логотип -->
-      <div class="logo">
-        <svg class="logo-cube" viewBox="0 0 32 32" aria-hidden="true">
+            <!-- Логотип -->
+            <div class="logo">
+                <svg class="logo-cube" viewBox="0 0 32 32" aria-hidden="true">
           <path d="M16 2 29 9.5v13L16 30 3 22.5v-13z" fill="#4A90E2" />
           <path d="M16 2 29 9.5 16 17 3 9.5z" fill="#8BB9EE" />
           <path d="M16 17v13L3 22.5v-13z" fill="#3B79C4" />
         </svg>
-        <span class="logo-text"><b>Yes</b><i>Coding</i><em>3D</em></span>
-      </div>
+                <span class="logo-text"><b>Yes</b><i>Coding</i><em>3D</em></span>
+            </div>
 
-      <!-- Новый проект + печать (STL для 3D-принтера) -->
-      <div class="tb-group">
-        <button id="btn-new" class="tb" title="Новый проект"><img src="./icons/new.png" class="iconsImage" alt="">Новый</button>
-        <button id="btn-export" class="tb tb-primary" title="Печать — экспорт STL (Ctrl+E)"><img src="./icons/export.png" class="iconsImage" alt="">Печать</button>
-      </div>
-      <span class="tb-sep"></span>
-      <!-- Проект JSON: фигуры по отдельности (основное сохранение) -->
-      <div class="tb-group">
-        <button id="btn-save-json" class="tb" title="Сохранить проект (JSON, Ctrl+S)">Сохранить</button>
-        <button id="btn-load-json" class="tb" title="Открыть проект (JSON)">Открыть</button>
-      </div>
-      <input type="file" id="json-input" accept=".json,application/json" hidden>
-      <span class="tb-sep"></span>
+            <!-- Новый проект + печать (STL для 3D-принтера) -->
+            <div class="tb-group">
+                <button id="btn-new" class="tb" title="Новый проект"><img src="./icons/new.png" class="iconsImage" alt="">Новый</button>
+                <button id="btn-export" class="tb tb-primary" title="Печать — экспорт STL (Ctrl+E)"><img src="./icons/export.png" class="iconsImage" alt="">Печать</button>
+            </div>
+            <span class="tb-sep"></span>
+            <!-- Проект JSON: фигуры по отдельности (основное сохранение) -->
+            <div class="tb-group">
+                <button id="btn-save-json" class="tb" title="Сохранить проект (JSON, Ctrl+S)">Сохранить</button>
+                <button id="btn-load-json" class="tb" title="Открыть проект (JSON)">Открыть</button>
+            </div>
+            <input type="file" id="json-input" accept=".json,application/json" hidden>
+            <span class="tb-sep"></span>
 
-      <!-- Отмена / повтор -->
-      <div class="tb-group">
-        <button id="btn-undo" class="tb tb-icon" title="Отменить (Ctrl+Z)"><img src="./icons/cancel.png" class="iconsImage"></button>
-        <button id="btn-redo" class="tb tb-icon" title="Вернуть (Ctrl+Shift+Z)"><img src="./icons/return.png" class="iconsImage"></button>
-      </div>
-      <span class="tb-sep"></span>
+            <!-- Отмена / повтор -->
+            <div class="tb-group">
+                <button id="btn-undo" class="tb tb-icon" title="Отменить (Ctrl+Z)"><img src="./icons/cancel.png" class="iconsImage"></button>
+                <button id="btn-redo" class="tb tb-icon" title="Вернуть (Ctrl+Shift+Z)"><img src="./icons/return.png" class="iconsImage"></button>
+            </div>
+            <span class="tb-sep"></span>
 
-      <!-- Копия / удаление -->
-      <div class="tb-group">
-        <button id="btn-dup" class="tb" title="Дублировать (Ctrl+D)"><img src="./icons/dublicate.png" class="iconsImage">Дубликат</button>
-        <button id="btn-del" class="tb" title="Удалить (Delete)"><img src="./icons/delete.png" class="iconsImage">Удалить</button>
-      </div>
-      <span class="tb-sep"></span>
+            <!-- Копия / удаление -->
+            <div class="tb-group">
+                <button id="btn-dup" class="tb" title="Дублировать (Ctrl+D)"><img src="./icons/dublicate.png" class="iconsImage">Дубликат</button>
+                <button id="btn-del" class="tb" title="Удалить (Delete)"><img src="./icons/delete.png" class="iconsImage">Удалить</button>
+            </div>
+            <span class="tb-sep"></span>
 
-      <!-- Группировка / разгруппировка -->
-      <div class="tb-group">
-        <button id="btn-group" class="tb tb-primary" title="Сгруппировать (Ctrl+G)"><img src="./icons/group.png" class="iconsImage">Сгруппировать</button>
-        <button id="btn-ungroup" class="tb" title="Разгруппировать (Ctrl+Shift+G)"><img src="./icons/ungroup.png" class="iconsImage">Разобрать</button>
-      </div>
-      <span class="tb-sep"></span>
+            <!-- Группировка / разгруппировка -->
+            <div class="tb-group">
+                <button id="btn-group" class="tb tb-primary" title="Сгруппировать (Ctrl+G)"><img src="./icons/group.png" class="iconsImage">Сгруппировать</button>
+                <button id="btn-ungroup" class="tb" title="Разгруппировать (Ctrl+Shift+G)"><img src="./icons/ungroup.png" class="iconsImage">Разобрать</button>
+            </div>
+            <span class="tb-sep"></span>
 
-      <!-- Один режим-трансформ: клик или Tab — цикл Двигать→Вращать→Размер; G/R/S — сразу -->
-      <div class="tb-group" id="mode-seg">
-        <button id="mode-cycle" class="tb on" title="Трансформация: клик или Tab — смена режима. G двигать, R вращать, S размер">
+            <!-- Один режим-трансформ: клик или Tab — цикл Двигать→Вращать→Размер; G/R/S — сразу -->
+            <div class="tb-group" id="mode-seg">
+                <button id="mode-cycle" class="tb on" title="Трансформация: клик или Tab — смена режима. G двигать, R вращать, S размер">
           <img src="./icons/move.png" class="iconsImage" id="mode-icon" alt="">
           <span id="mode-label">Двигать</span>
         </button>
-      </div>
-      <span class="tb-sep"></span>
-      <div class="tb-group">
-        <button id="btn-box" class="tb" title="Выделить рамкой (B или Ctrl+перетаскивание)">Рамка</button>
-      </div>
-    </header>
+            </div>
+            <span class="tb-sep"></span>
+            <div class="tb-group">
+                <button id="btn-box" class="tb" title="Выделить рамкой (B или Ctrl+перетаскивание)">Рамка</button>
+            </div>
+        </header>
 
-    <!-- Левая панель: библиотека фигур -->
-    <aside id="library">
-      <!-- Вкладки категорий (Стандарт / Формы / Декор / Буквы) -->
-      <div class="lib-tabs" id="lib-tabs"></div>
-      <!-- Сетка кнопок фигур или поле ввода текста -->
-      <div class="lib-body" id="lib-body"></div>
-    </aside>
+        <!-- Левая панель: библиотека фигур -->
+        <aside id="library">
+            <!-- Вкладки категорий (Стандарт / Формы / Декор / Буквы) -->
+            <div class="lib-tabs" id="lib-tabs"></div>
+            <!-- Сетка кнопок фигур или поле ввода текста -->
+            <div class="lib-body" id="lib-body"></div>
+        </aside>
 
-    <!-- Центральная область: 3D-сцена -->
-    <main id="viewport">
-      <!-- Canvas для WebGL-рендера -->
-      <canvas id="gl"></canvas>
-      <div id="marquee" class="hidden"></div>
-      <div id="ruler-hint" class="hidden">Линейка: кликни две точки · Esc — выход</div>
-      <div id="ruler-label" class="hidden"></div>
+        <!-- Центральная область: 3D-сцена -->
+        <main id="viewport">
+            <!-- Canvas для WebGL-рендера -->
+            <canvas id="gl"></canvas>
+            <div id="marquee" class="hidden"></div>
+            <div id="ruler-hint" class="hidden">Линейка: кликни две точки · Esc — выход</div>
+            <div id="ruler-label" class="hidden"></div>
 
-      <!-- Кнопки смены вида камеры -->
-      <div id="view-chips">
-        <button class="chip" data-view="iso">3D</button>
-        <button class="chip" data-view="top">Сверху</button>
-        <button class="chip" data-view="front">Спереди</button>
-        <button class="chip" data-view="side">Сбоку</button>
-      </div>
+            <!-- Кнопки смены вида камеры -->
+            <div id="view-chips">
+                <button class="chip" data-view="iso">3D</button>
+                <button class="chip" data-view="top">Сверху</button>
+                <button class="chip" data-view="front">Спереди</button>
+                <button class="chip" data-view="side">Сбоку</button>
+            </div>
 
-      <!-- Подсказка при редактировании группы -->
-      <div id="edit-hint" class="hidden">Редактирование группы · <b>Esc</b> — собрать обратно</div>
+            <!-- Подсказка при редактировании группы -->
+            <div id="edit-hint" class="hidden">Редактирование группы · <b>Esc</b> — собрать обратно</div>
 
-      <!-- Всплывающие сообщения (toast) -->
-      <div id="toast" class="hidden"></div>
-    </main>
+            <!-- Всплывающие сообщения (toast) -->
+            <div id="toast" class="hidden"></div>
+        </main>
 
-    <!-- Правая панель: параметры выбранного объекта -->
-    <aside id="inspector">
-      <div class="insp-head">Параметры</div>
-      <!-- Динамика  -->
-      <div id="insp-body"></div>
-    </aside>
+        <!-- Правая панель: параметры выбранного объекта -->
+        <aside id="inspector">
+            <div class="insp-head">Параметры</div>
+            <!-- Динамика  -->
+            <div id="insp-body"></div>
+        </aside>
 
-    <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
-    <footer id="statusbar">
-      <span><b>G</b>/<b>R</b>/<b>S</b> трансформ</span><span><b>Tab</b> смена режима</span>
-      <span><b>B</b> / <b>Ctrl+тяг</b> рамка</span><span><b>L</b> линейка</span><span>сетка 1 / 10 мм · поле 200 мм</span>
-      <span><b>D</b> на плоскость</span><span><b>Ctrl+S</b> сохранить</span><span><b>Ctrl+E</b> печать</span><span><b>Ctrl+D</b> копия</span>
-      <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
-      <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
-    </footer>
-  </div>
+        <!-- Нижняя строка состояния (горячие клавиши подсказки) -->
+        <footer id="statusbar">
+            <span><b>G</b>/<b>R</b>/<b>S</b> трансформ</span><span><b>Tab</b> смена режима</span>
+            <span><b>B</b> / <b>Ctrl+тяг</b> рамка</span><span><b>L</b> линейка</span><span>сетка 1 / 10 мм · поле 200 мм</span>
+            <span><b>D</b> на плоскость</span><span><b>Ctrl+S</b> сохранить</span><span><b>Ctrl+E</b> печать</span><span><b>Ctrl+D</b> копия</span>
+            <span><b>Ctrl+G</b> группа</span><span><b>Ctrl+Z</b> отмена</span>
+            <span><b>Shift</b> точное движение</span><span><b>2×клик</b> внутрь группы</span>
+        </footer>
+    </div>
 
     <div id="mirror-overlay" class="hidden">
-      <div class="bz-card" style="width:min(420px,100%)">
-        <h2>Зеркало копии</h2>
-        <p class="bz-hint">Выделенные фигуры скопируются и отразятся от оси площадки (через центр сетки).</p>
-        <div class="bz-actions">
-          <button type="button" id="btn-mirror-cancel" class="tb">Отмена</button>
-          <button type="button" id="btn-mirror-z" class="tb">От оси Z</button>
-          <button type="button" id="btn-mirror-x" class="tb tb-primary">От оси X</button>
+        <div class="bz-card" style="width:min(420px,100%)">
+            <h2>Зеркало копии</h2>
+            <p class="bz-hint">Выделенные фигуры скопируются и отразятся от оси площадки (через центр сетки).</p>
+            <div class="bz-actions">
+                <button type="button" id="btn-mirror-cancel" class="tb">Отмена</button>
+                <button type="button" id="btn-mirror-z" class="tb">От оси Z</button>
+                <button type="button" id="btn-mirror-x" class="tb tb-primary">От оси X</button>
+            </div>
         </div>
-      </div>
     </div>
     <div id="array-overlay" class="hidden">
-      <div class="bz-card" style="width:min(420px,100%)">
-        <h2>Массив</h2>
-        <p class="bz-hint">Копии выделенного. Ряд — вдоль X. Круг — вокруг центра выделения.</p>
-        <div class="vase-sliders">
-          <label>Тип
+        <div class="bz-card" style="width:min(420px,100%)">
+            <h2>Массив</h2>
+            <p class="bz-hint">Копии выделенного. Ряд — вдоль X. Круг — вокруг центра выделения.</p>
+            <div class="vase-sliders">
+                <label>Тип
             <select id="array-mode">
               <option value="row">Ряд</option>
               <option value="circle">Круг</option>
             </select>
           </label>
-          <label>Сколько <input id="array-count" type="range" min="2" max="16" step="1" value="4"> <output id="array-count-out">4</output></label>
-          <label>Шаг / радиус, мм <input id="array-step" type="range" min="8" max="80" step="1" value="24"> <output id="array-step-out">24</output></label>
+                <label>Сколько <input id="array-count" type="range" min="2" max="16" step="1" value="4"> <output id="array-count-out">4</output></label>
+                <label>Шаг / радиус, мм <input id="array-step" type="range" min="8" max="80" step="1" value="24"> <output id="array-step-out">24</output></label>
+            </div>
+            <div class="bz-actions">
+                <button type="button" id="btn-array-cancel" class="tb">Отмена</button>
+                <button type="button" id="btn-array-ok" class="tb tb-primary">Размножить</button>
+            </div>
         </div>
-        <div class="bz-actions">
-          <button type="button" id="btn-array-cancel" class="tb">Отмена</button>
-          <button type="button" id="btn-array-ok" class="tb tb-primary">Размножить</button>
-        </div>
-      </div>
     </div>
     <div id="bezier-overlay" class="hidden">
-      <div class="bz-card">
-        <h2 id="bz-title">Кривая Безье</h2>
-        <p class="bz-hint" id="bz-hint">Синие точки — якоря. Оранжевые квадраты — ручки. Наложение контура вырежет дырку.</p>
-        <canvas id="bz-canvas" width="640" height="420"></canvas>
-        <div class="bz-row">
-          <label>Высота, мм <input id="bz-depth" type="range" min="2" max="40" value="8"> <output id="bz-depth-out">8</output></label>
+        <div class="bz-card">
+            <h2 id="bz-title">Кривая Безье</h2>
+            <p class="bz-hint" id="bz-hint">Синие точки — якоря. Оранжевые квадраты — ручки. Наложение контура вырежет дырку.</p>
+            <canvas id="bz-canvas" width="640" height="420"></canvas>
+            <div class="bz-row">
+                <label>Высота, мм <input id="bz-depth" type="range" min="2" max="40" value="8"> <output id="bz-depth-out">8</output></label>
+            </div>
+            <div class="bz-actions">
+                <button type="button" id="btn-bz-reset" class="tb">Сбросить</button>
+                <button type="button" id="btn-bz-undo" class="tb">Убрать точку</button>
+                <button type="button" id="btn-bz-cancel" class="tb">Отмена</button>
+                <button type="button" id="btn-bz-extrude" class="tb tb-primary">Выдавить</button>
+            </div>
         </div>
-        <div class="bz-actions">
-          <button type="button" id="btn-bz-reset" class="tb">Сбросить</button>
-          <button type="button" id="btn-bz-undo" class="tb">Убрать точку</button>
-          <button type="button" id="btn-bz-cancel" class="tb">Отмена</button>
-          <button type="button" id="btn-bz-extrude" class="tb tb-primary">Выдавить</button>
-        </div>
-      </div>
     </div>
 
     <!-- Экран загрузки при старте -->
     <div id="loading">
-      <div class="load-card">
-        <div class="spin"></div>
-        Собираю фигуры…
-      </div>
+        <div class="load-card">
+            <div class="spin"></div>
+            Собираю фигуры…
+        </div>
     </div>
 
     <!-- Экран фатальной ошибки: нет WebGL или сбой при запуске -->
     <div id="fatal-error" class="hidden">
-      <div class="error-card">
-        <h1>Не удалось запустить редактор</h1>
-        <p id="fatal-error-text">Ваш браузер не поддерживает WebGL, необходимый для 3D-редактора. Попробуйте обновить браузер или открыть страницу в другом.</p>
-        <button onclick="location.reload()">Обновить страницу</button>
-      </div>
+        <div class="error-card">
+            <h1>Не удалось запустить редактор</h1>
+            <p id="fatal-error-text">Ваш браузер не поддерживает WebGL, необходимый для 3D-редактора. Попробуйте обновить браузер или открыть страницу в другом.</p>
+            <button onclick="location.reload()">Обновить страницу</button>
+        </div>
     </div>
 
-  <!-- Проверка WebGL и обработка фатальных ошибок до загрузки основного скрипта -->
-  <script>
-    (function () {
-      function showFatal(message) {
-        document.getElementById("loading").classList.add("hidden");
-        var el = document.getElementById("fatal-error");
-        if (message) document.getElementById("fatal-error-text").textContent = message;
-        el.classList.remove("hidden");
-      }
+    <!-- Проверка WebGL и обработка фатальных ошибок до загрузки основного скрипта -->
+    <script>
+        (function() {
+            function showFatal(message) {
+                document.getElementById("loading").classList.add("hidden");
+                var el = document.getElementById("fatal-error");
+                if (message) document.getElementById("fatal-error-text").textContent = message;
+                el.classList.remove("hidden");
+            }
 
-      function hasWebGL() {
-        try {
-          var canvas = document.createElement("canvas");
-          return !!(window.WebGLRenderingContext &&
-            (canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
-        } catch (e) {
-          return false;
-        }
-      }
+            function hasWebGL() {
+                try {
+                    var canvas = document.createElement("canvas");
+                    return !!(window.WebGLRenderingContext &&
+                        (canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+                } catch (e) {
+                    return false;
+                }
+            }
 
-      if (!hasWebGL()) {
-        showFatal("Ваш браузер не поддерживает WebGL, необходимый для 3D-редактора. Попробуйте обновить браузер или открыть страницу в другом.");
-        return;
-      }
+            if (!hasWebGL()) {
+                showFatal("Ваш браузер не поддерживает WebGL, необходимый для 3D-редактора. Попробуйте обновить браузер или открыть страницу в другом.");
+                return;
+            }
 
-      var bootGuard = true;
-      setTimeout(function () { bootGuard = false; }, 8000);
-      window.addEventListener("error", function (e) {
-        if (bootGuard) showFatal("Произошла непредвиденная ошибка при запуске. Попробуйте обновить страницу.");
-      });
+            var bootGuard = true;
+            setTimeout(function() {
+                bootGuard = false;
+            }, 8000);
+            window.addEventListener("error", function(e) {
+                if (bootGuard) showFatal("Произошла непредвиденная ошибка при запуске. Попробуйте обновить страницу.");
+            });
 
-      if (typeof Uint8Array.fromBase64 !== "function") {
-        Uint8Array.fromBase64 = function (str) {
-          var bin = atob(String(str).replace(/-/g, "+").replace(/_/g, "/"));
-          var out = new Uint8Array(bin.length);
-          for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-          return out;
-        };
-      }
-      if (typeof Uint8Array.prototype.toBase64 !== "function") {
-        Uint8Array.prototype.toBase64 = function () {
-          var s = "";
-          for (var i = 0; i < this.length; i++) s += String.fromCharCode(this[i]);
-          return btoa(s);
-        };
-      }
-      var script = document.createElement("script");
-      script.src = "./app.js";
-      script.onerror = function () {
-        showFatal("Не удалось загрузить редактор. Проверьте подключение к интернету и обновите страницу.");
-      };
-      document.body.appendChild(script);
-    })();
-  </script>
+            if (typeof Uint8Array.fromBase64 !== "function") {
+                Uint8Array.fromBase64 = function(str) {
+                    var bin = atob(String(str).replace(/-/g, "+").replace(/_/g, "/"));
+                    var out = new Uint8Array(bin.length);
+                    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+                    return out;
+                };
+            }
+            if (typeof Uint8Array.prototype.toBase64 !== "function") {
+                Uint8Array.prototype.toBase64 = function() {
+                    var s = "";
+                    for (var i = 0; i < this.length; i++) s += String.fromCharCode(this[i]);
+                    return btoa(s);
+                };
+            }
+            var script = document.createElement("script");
+            var files = ['lib/engine.js', 'js/01-editor.js', 'js/02-editor.js', 'js/03-editor.js', 'js/04-editor.js', 'js/05-editor.js', 'js/06-editor.js', 'js/07-editor.js', 'js/08-editor.js', 'js/09-editor.js', 'js/10-editor.js', 'js/11-editor.js', 'js/12-editor.js', 'js/13-editor.js', 'js/14-editor.js', 'js/15-editor.js', 'js/16-editor.js'];
+
+            function loadAt(i) {
+                if (i >= files.length) return;
+                var script = document.createElement("script");
+                script.src = "./" + files[i];
+                script.onerror = function() {
+                    showFatal("Не удалось загрузить " + files[i]);
+                };
+                script.onload = function() {
+                    loadAt(i + 1);
+                };
+                document.body.appendChild(script);
+            }
+            loadAt(0);
+            script.onerror = function() {
+                showFatal("Не удалось загрузить редактор. Проверьте подключение к интернету и обновите страницу.");
+            };
+            document.body.appendChild(script);
+        })();
+    </script>
 </body>
 
 </html>
