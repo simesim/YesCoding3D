@@ -15,7 +15,9 @@
     <meta property="og:locale" content="ru_RU">
 
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
     <link rel="stylesheet" href="fonts.css">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -180,6 +182,19 @@
         </div>
     </div>
 
+
+    <!-- Свои попапы вместо системных prompt/confirm (нужны для Electron) -->
+    <div id="yc-popup" class="hidden">
+        <div class="yc-popup-card">
+            <p id="yc-popup-text"></p>
+            <input id="yc-popup-input" type="text" class="hidden" autocomplete="off">
+            <div class="yc-popup-actions">
+                <button type="button" id="yc-popup-cancel" class="tb">Отмена</button>
+                <button type="button" id="yc-popup-ok" class="tb tb-primary">ОК</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Экран загрузки при старте -->
     <div id="loading">
         <div class="load-card">
@@ -245,8 +260,7 @@
                     return btoa(s);
                 };
             }
-            var script = document.createElement("script");
-            var files = ['lib/engine.js', 'js/01-editor.js', 'js/02-editor.js', 'js/03-editor.js', 'js/04-editor.js', 'js/05-editor.js', 'js/06-editor.js', 'js/07-editor.js', 'js/08-editor.js', 'js/09-editor.js', 'js/10-editor.js', 'js/11-editor.js', 'js/12-editor.js', 'js/13-editor.js', 'js/14-editor.js', 'js/15-editor.js', 'js/16-editor.js'];
+            var files = ['js/00-popups.js', 'lib/engine.js', 'js/01-editor.js', 'js/02-editor.js', 'js/03-editor.js', 'js/04-editor.js', 'js/05-editor.js', 'js/06-editor.js', 'js/07-editor.js', 'js/08-editor.js', 'js/09-editor.js', 'js/10-editor.js', 'js/11-editor.js', 'js/12-editor.js', 'js/13-editor.js', 'js/14-editor.js', 'js/15-editor.js', 'js/16-editor.js'];
 
             function loadAt(i) {
                 if (i >= files.length) return;
@@ -261,10 +275,6 @@
                 document.body.appendChild(script);
             }
             loadAt(0);
-            script.onerror = function() {
-                showFatal("Не удалось загрузить редактор. Проверьте подключение к интернету и обновите страницу.");
-            };
-            document.body.appendChild(script);
         })();
     </script>
 </body>

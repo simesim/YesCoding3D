@@ -1,14 +1,36 @@
 {
   "name": "yescoding3d",
   "version": "1.0.0",
-  "description": "YesCoding3D — браузерный 3D-редактор (Three.js)",
+  "description": "YesCoding3D — 3D-редактор",
+  "author": "YesCoding",
   "private": true,
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "app": "electron .",
+    "dist": "electron-builder --win portable"
   },
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.yescoding.editor",
+    "productName": "YesCoding3D",
+    "files": [
+      "main.js",
+      "preload.js",
+      "public/**/*",
+      "build/icon.ico"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false,
+      "target": ["portable"]
+    }
   }
 }

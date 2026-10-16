@@ -107,10 +107,18 @@ function Q1(n, e) {
 }
 
 function _4() {
-  let n = sa();
-  n.length && !confirm(
-    "\u041D\u0430\u0447\u0430\u0442\u044C \u043D\u043E\u0432\u044B\u0439 \u043F\u0440\u043E\u0435\u043A\u0442? \u0422\u0435\u043A\u0443\u0449\u0430\u044F \u0441\u0446\u0435\u043D\u0430 \u0431\u0443\u0434\u0435\u0442 \u043E\u0447\u0438\u0449\u0435\u043D\u0430."
-    ) || (n.length && Hi(aa(n, [])), bg(), markProjectClean())
+  var n = sa();
+  if (!n.length) {
+    bg();
+    markProjectClean();
+    return;
+  }
+  ycConfirm("Начать новый проект? Текущая сцена будет очищена.").then(function (yes) {
+    if (!yes) return;
+    Hi(aa(n, []));
+    bg();
+    markProjectClean();
+  });
 }
 
 /*   === Проект JSON: сохранить / открыть (фигуры по отдельности) ===
