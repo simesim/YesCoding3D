@@ -29,28 +29,29 @@ Lt.setSize(.95);
 Vt.add(Lt);
 Lt.addEventListener("dragging-changed", n => {
     Mr.enabled = !n.value;
-    if (!n.value) markProjectDirty();
+    // Изменение регистрируется один раз в mouseUp через lc().
 });
 
 function Zn(n) {
-    ot = n.filter(e => e.parent === Vt);
+    ot = n.filter(e => e.parent === Vt && e.visible);
     for (let [, e] of Df) Vt.remove(e);
     Df.clear();
     for (let e of ot) {
         let t = new Al(e, 4886754);
         t.material.transparent = !0, t.material.opacity = .9, Vt.add(t), Df.set(e, t)
     }
-    if (Lt.detach(), ot.length === 1) Lt.attach(ot[0]);
-    else if (ot.length > 1) {
+    if (Lt.detach(), ot.length === 1 && canEditSelection()) Lt.attach(ot[0]);
+    else if (ot.length > 1 && canEditSelection()) {
         let e = new E;
         ot.forEach(t => e.add(t.position)), e.divideScalar(ot.length), yr.position.copy(e), yr
             .quaternion.identity(), yr.scale.set(1, 1, 1), yr.updateMatrix(), Lt.attach(yr)
     }
-    ls(), hc()
+    ls(), hc(), renderObjectList()
 }
 var br = null;
 Lt.addEventListener("mouseDown", () => {
     let n = Lt.object;
+    if (!canEditSelection()) return;
     n && (n.updateMatrix(), br = {
         pivotM: n.matrix.clone(),
         objs: [...ot],
@@ -78,7 +79,7 @@ Lt.addEventListener("mouseUp", () => {
     t.some((r, s) => !r.equals(e[s])) && lc(vg(n, e, t)), br = null, ls()
 });
 addEventListener("keydown", n => {
-    n.key === "Shift" && (Lt.setTranslationSnap(null), Lt.setRotationSnap(null), Lt.setScaleSnap(
+    !ycIsModalOpen() && n.key === "Shift" && (Lt.setTranslationSnap(null), Lt.setRotationSnap(null), Lt.setScaleSnap(
         null))
 });
 addEventListener("keyup", n => {
@@ -128,7 +129,7 @@ function Z1(n) {
     let e = Sr.getBoundingClientRect();
     N1.set((n.clientX - e.left) / e.width * 2 - 1, -((n.clientY - e.top) / e.height) * 2 + 1), B1
         .setFromCamera(N1, Vi);
-    let t = B1.intersectObjects(sa(), !1);
+    let t = B1.intersectObjects(sa().filter(isObjectEditable), !1);
     return t.length ? t[0].object : null
 }
 /*   Добавление фигуры на сцену   */

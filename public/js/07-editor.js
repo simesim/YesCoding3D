@@ -8,6 +8,9 @@ function applyTransform(mesh, d) {
 }
 
 function applyColorHole(mesh, d) {
+    mesh.userData.objectName = typeof d.objectName === "string" ? d.objectName.slice(0, 80) : "";
+    mesh.userData.locked = d.locked === true;
+    mesh.visible = d.visible !== false;
     mesh.userData._mat.color.setHex(d.color);
     mesh.userData.isHole = !!d.isHole;
     mesh.material = d.isHole ? X1 : mesh.userData._mat;
@@ -17,40 +20,19 @@ function applyColorHole(mesh, d) {
 function meshFromData(d) {
     if (d.kind === "group") {
         let members = (d.members || []).map(meshFromData);
-        if (members.length < 1) {
-            // пустая группа — пропускаем
-            let empty = new le(new vt(1, 1, 1), W1(d.color || 0x4A90E2));
-            empty.userData = {
-                kind: "shape",
-                def: {
-                    type: "box",
-                    params: {}
-                },
-                isHole: !1,
-                _mat: empty.material
-            };
-            applyTransform(empty, d);
-            return empty;
-        }
-        if (members.length === 1) {
-            applyTransform(members[0], d);
-            applyColorHole(members[0], d);
-            return members[0];
-        }
+        if (!members.length) throw new Error("Пустая группа в проекте");
         // CSG как в cc()
         let solids = members.filter(m => !m.userData.isHole);
         let holes = members.filter(m => m.userData.isHole);
-        if (!solids.length) solids = members.slice(0, 1), holes = members.slice(1);
+        if (!solids.length) throw new Error("В группе нет тела");
         let i;
         try {
             i = cg(solids[0]);
             for (let l = 1; l < solids.length; l++) i = oc.evaluate(i, cg(solids[l]), 0);
             for (let l of holes) i = oc.evaluate(i, cg(l), 1);
         } catch (err) {
-            console.error(err);
-            // fallback: просто первый solid
-            applyTransform(solids[0], d);
-            return solids[0];
+            // Не подменяем группу первой деталью: загрузка должна завершиться целиком.
+            throw new Error("Не удалось восстановить группу: " + err.message);
         }
         let r = i.geometry;
         r.computeBoundingBox();
@@ -70,8 +52,13 @@ function meshFromData(d) {
             isHole: !1,
             _mat: a,
             members: members,
-            baseMatrix: o.matrix.clone()
+            // Старые JSON не содержат baseMatrix. Исходная группа создавалась
+            // без поворота и масштаба, в центре результата CSG.
+            baseMatrix: d.baseMatrix
+                ? new Bm.Matrix4().fromArray(d.baseMatrix)
+                : new Bm.Matrix4().makeTranslation(s.x, s.y, s.z)
         };
+        applyColorHole(o, d);
         return o;
     }
     // shape

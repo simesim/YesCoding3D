@@ -97,7 +97,7 @@
         <!-- Центральная область: 3D-сцена -->
         <main id="viewport">
             <!-- Canvas для WebGL-рендера -->
-            <canvas id="gl"></canvas>
+            <canvas id="gl" tabindex="0" aria-label="3D-сцена"></canvas>
             <div id="marquee" class="hidden"></div>
             <div id="ruler-hint" class="hidden">Линейка: кликни две точки · Esc — выход</div>
             <div id="ruler-label" class="hidden"></div>
@@ -119,6 +119,11 @@
 
         <!-- Правая панель: параметры выбранного объекта -->
         <aside id="inspector">
+            <section id="objects-panel" aria-labelledby="objects-title">
+                <div class="insp-head objects-head"><span id="objects-title">Объекты</span><span id="objects-count">0</span></div>
+                <p class="objects-hint">Shift + клик — несколько · карандаш — имя.<br>Скрытые объекты не попадут в STL.</p>
+                <div id="objects-list" aria-label="Список объектов"></div>
+            </section>
             <div class="insp-head">Параметры</div>
             <!-- Динамика  -->
             <div id="insp-body"></div>
@@ -182,6 +187,19 @@
         </div>
     </div>
 
+
+    <div id="print-check-overlay" class="hidden">
+        <div class="print-check-card" role="dialog" aria-modal="true" aria-labelledby="print-check-title" aria-describedby="print-check-note">
+            <h2 id="print-check-title">Проверь модель перед печатью</h2>
+            <p id="print-check-note">Это предварительная проверка. Касание деталей не гарантирует прочного соединения; окончательно проверь STL в слайсере.</p>
+            <div id="print-check-content"></div>
+            <div class="print-check-actions">
+                <button type="button" id="print-check-select" class="tb">Выделить проблемные</button>
+                <button type="button" id="print-check-cancel" class="tb">Вернуться к модели</button>
+                <button type="button" id="print-check-proceed" class="tb tb-primary">Экспортировать STL</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Свои попапы вместо системных prompt/confirm (нужны для Electron) -->
     <div id="yc-popup" class="hidden">
@@ -260,7 +278,7 @@
                     return btoa(s);
                 };
             }
-            var files = ['js/00-popups.js', 'lib/engine.js', 'js/01-editor.js', 'js/02-editor.js', 'js/03-editor.js', 'js/04-editor.js', 'js/05-editor.js', 'js/06-editor.js', 'js/07-editor.js', 'js/08-editor.js', 'js/09-editor.js', 'js/10-editor.js', 'js/11-editor.js', 'js/12-editor.js', 'js/13-editor.js', 'js/14-editor.js', 'js/15-editor.js', 'js/16-editor.js'];
+            var files = ['js/00-popups.js', 'lib/engine.js', 'js/01-editor.js', 'js/02-editor.js', 'js/03-editor.js', 'js/04-editor.js', 'js/05-editor.js', 'js/06-editor.js', 'js/07-editor.js', 'js/08-editor.js', 'js/09-editor.js', 'js/10-editor.js', 'js/11-editor.js', 'js/12-editor.js', 'js/13-editor.js', 'js/14-editor.js', 'js/15-editor.js', 'js/17-objects.js', 'js/18-print-check.js', 'js/16-editor.js'];
 
             function loadAt(i) {
                 if (i >= files.length) return;

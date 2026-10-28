@@ -1,34 +1,43 @@
 // @ts-nocheck
-function _g() {
-  let n = sa().filter(a => !a.userData.isHole);
-  if (!n.length) return ki(
-    "На площадке нет фигур для экспорта",
-    !0), 0;
-  askFileName(".stl").then(function (stlName) {
+async function _g() {
+  if (printExportBusy) return;
+  let objects = printExportObjects();
+  if (!objects.length) { ki("На площадке нет фигур для экспорта", !0); return; }
+  printExportBusy = true;
+  try {
+    let report = checkPrintModel(objects);
+    if (report.hasWarnings && !await showPrintCheck(report)) return;
+    let stlName = await askFileName(".stl");
     if (!stlName) return;
-    let e = n.map(a => {
-        let o = a.geometry.clone();
-        o.index && (o = o.toNonIndexed());
-        for (let l of Object.keys(o.attributes)) l !== "position" && l !== "normal" && o
-          .deleteAttribute(l);
-        return a.updateMatrixWorld(!0), o.applyMatrix4(a.matrixWorld), o
-      }),
-      t = Gm(e, !1);
-    t.rotateX(Math.PI / 2);
-    let i = new Ch().parse(new le(t), {
-        binary: !0
-      }),
-      r = new Blob([i], {
-        type: "model/stl"
-      }),
-      s = document.createElement("a");
-    s.href = URL.createObjectURL(r);
-    s.download = stlName;
-    s.click();
-    setTimeout(() => URL.revokeObjectURL(s.href), 4e3);
-    markProjectClean();
-    ki("STL сохранён — можно печатать!");
-  });
+    downloadPrintSTL(objects, stlName);
+  } catch (err) {
+    console.error(err);
+    ki("Не удалось подготовить STL. Проект остался в редакторе.", !0);
+  } finally { printExportBusy = false; }
+}
+
+function downloadPrintSTL(objects, stlName) {
+  let geometries = [], merged = null;
+  try {
+    for (let obj of objects) {
+      let geo = obj.geometry.clone();
+      if (geo.index) { let expanded = geo.toNonIndexed();geo.dispose();geo = expanded; }
+      geometries.push(geo);
+      for (let key of Object.keys(geo.attributes)) if (key !== "position" && key !== "normal") geo.deleteAttribute(key);
+      obj.updateMatrixWorld(true);geo.applyMatrix4(obj.matrixWorld);
+    }
+    merged = Gm(geometries, false);
+    if (!merged) throw new Error("Не удалось собрать геометрию STL");
+    merged.rotateX(Math.PI / 2);
+    let bytes = new Ch().parse(new le(merged), { binary: true });
+    let blob = new Blob([bytes], { type: "model/stl" }), link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);link.download = stlName;link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+    ki("STL сохранён. Проверь модель в слайсере.");
+  } finally {
+    geometries.forEach(geo => geo.dispose());
+    if (merged) merged.dispose();
+  }
 }
 var S4 = [
     ["std", "\u0421\u0442\u0430\u043D\u0434\u0430\u0440\u0442"],

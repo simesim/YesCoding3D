@@ -829,3 +829,40 @@ input {
   justify-content: flex-end;
   gap: 8px;
 }
+
+/* ---------- Список объектов ---------- */
+#objects-panel { flex: none; min-height: 120px; max-height: 38%; display: flex; flex-direction: column; border-bottom: 1px solid var(--line); }
+.objects-head { justify-content: space-between; }
+#objects-count { font-size: 12px; font-weight: 600; color: var(--blue-d); background: var(--blue-t); border-radius: 12px; padding: 2px 8px; }
+.objects-hint { flex: none; padding: 7px 12px 5px; color: #65788a; font-size: 10px; line-height: 1.45; }
+#objects-list { min-height: 0; overflow-y: auto; padding: 2px 7px 9px; }
+.objects-empty { padding: 9px 5px; font-size: 12px; line-height: 1.5; color: #65788a; }
+.object-row { display: flex; align-items: center; gap: 1px; padding: 3px; margin-top: 3px; border: 1px solid transparent; border-radius: 9px; background: #f6f8fb; }
+.object-row.selected { border-color: var(--blue); background: var(--blue-t); }
+.object-select { min-width: 0; flex: 1; padding: 5px 3px; text-align: left; }
+.object-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 600; }
+.object-kind { display: block; margin-top: 3px; font-size: 10px; color: #65788a; }
+.object-row.is-hidden .object-select { opacity: .55; cursor: default; }
+.object-action { flex: none; width: 25px; height: 29px; border-radius: 6px; color: #65788a; display: inline-flex; align-items: center; justify-content: center; }
+.object-action svg { width: 16px; height: 16px; }
+.object-action:hover { color: var(--blue-d); background: #dceafa; }
+.object-action[aria-pressed="true"] { color: var(--blue-d); background: #dceafa; }
+.object-action:focus-visible, .object-select:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.object-lock-hint { background: #fff3d8; color: #785617; font-size: 12px; line-height: 1.5; border-radius: 8px; padding: 9px; margin-bottom: 12px; }
+#insp-body input:disabled, #insp-body button:disabled, #insp-body select:disabled { opacity: .55; cursor: not-allowed; }
+#insp-body { min-height: 0; }
+
+/* ---------- Проверка перед экспортом STL ---------- */
+#print-check-overlay { position: fixed; inset: 0; z-index: 125; background: rgba(25, 39, 56, .52); display: flex; align-items: center; justify-content: center; padding: 18px; }
+#print-check-overlay.hidden { display: none; }
+.print-check-card { display: flex; flex-direction: column; width: min(640px, 100%); max-height: 90vh; background: white; border-radius: 16px; padding: 22px; box-shadow: 0 12px 60px rgba(0, 0, 0, .22); }
+.print-check-card h2 { font-size: 20px; margin-bottom: 10px; }
+#print-check-note { color: #65788a; font-size: 12px; line-height: 1.6; margin-bottom: 14px; }
+#print-check-content { min-height: 0; overflow: auto; }
+#print-check-content section { background: #fff6e4; border: 1px solid #f1ddb4; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+#print-check-content h3 { font-size: 14px; color: #79591e; margin-bottom: 5px; }
+#print-check-content p, #print-check-content li { font-size: 12px; line-height: 1.6; }
+#print-check-content ul { margin: 7px 0 0 20px; }
+.print-check-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.print-check-actions button:disabled { opacity: .5; cursor: default; }
+.print-check-actions button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }

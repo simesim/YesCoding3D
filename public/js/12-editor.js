@@ -55,7 +55,7 @@ function objectsInMarquee(r) {
     var out = [];
     var v = new E();
     sa().forEach(function(obj) {
-        if (!obj.visible) return;
+        if (!isObjectEditable(obj)) return;
         obj.updateWorldMatrix(!0, !0);
         if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox();
         var bb = obj.geometry.boundingBox;
@@ -132,7 +132,7 @@ function rulerHit(ev) {
     var e = Sr.getBoundingClientRect();
     N1.set((ev.clientX - e.left) / e.width * 2 - 1, -((ev.clientY - e.top) / e.height) * 2 + 1);
     B1.setFromCamera(N1, Vi);
-    var hits = B1.intersectObjects(sa(), !1);
+    var hits = B1.intersectObjects(sa().filter(o => o.visible), !1);
     if (hits.length) return hits[0].point.clone();
     var ray = B1.ray;
     if (Math.abs(ray.direction.y) < 1e-5) return null;

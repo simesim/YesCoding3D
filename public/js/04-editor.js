@@ -84,33 +84,34 @@ function $1(n) {
         } : void 0,
         members: n.userData.members ? n.userData.members.map($1) : void 0,
         baseMatrix: n.userData.baseMatrix ? n.userData.baseMatrix.clone() : void 0
-    }, i
+    }, i.visible = n.visible, i.userData.objectName = n.userData.objectName,
+        i.userData.locked = !!n.userData.locked, i
 }
 var Vf = [],
     Hf = [];
 
 function lc(n) {
-    Vf.push(n), Hf.length = 0, hc()
+    Vf.push(n), Hf.length = 0, hc(), markProjectDirty(), renderObjectList()
 }
 
 function Hi(n) {
-    n.apply(), lc(n), markProjectDirty()
+    n.apply(), lc(n)
 }
 
 function gg() {
     let n = Vf.pop();
-    n && (n.revert(), Hf.push(n), hc(), ls(), markProjectDirty())
+    n && (n.revert(), Hf.push(n), hc(), ls(), markProjectDirty(), renderObjectList())
 }
 
 function Uf() {
     let n = Hf.pop();
-    n && (n.apply(), Vf.push(n), hc(), ls(), markProjectDirty())
+    n && (n.apply(), Vf.push(n), hc(), ls(), markProjectDirty(), renderObjectList())
 }
 
 function aa(n, e) {
     return {
         apply() {
-            n.forEach(t => Vt.remove(t)), e.forEach(t => Vt.add(t)), Zn(e.filter(t => t.userData.kind))
+            n.forEach(t => Vt.remove(t)), e.forEach(t => { ensureObjectName(t); Vt.add(t); }), Zn(e.filter(t => t.userData.kind))
         },
         revert() {
             e.forEach(t => Vt.remove(t)), n.forEach(t => Vt.add(t)), Zn(n.filter(t => t.userData.kind))

@@ -105,6 +105,7 @@ function cloneSel() {
 }
 
 function openMirrorPanel() {
+    if (!canEditSelection()) return;
     if (!ot.length) {
         ki("Сначала выдели фигуру", !0);
         return;
@@ -121,6 +122,7 @@ function closeMirrorPanel() {
 }
 
 function applyMirror(axis) {
+    if (!canEditSelection()) return;
     if (!ot.length) {
         ki("Нет выделения", !0);
         return;

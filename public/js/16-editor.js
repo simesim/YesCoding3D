@@ -197,6 +197,7 @@ M4();
 T4();
 ls();
 hc();
+renderObjectList();
 tS();
 requestAnimationFrame(function() {
     Mt("loading").classList.add("hidden");
@@ -211,7 +212,7 @@ window.app = {
     loadProject: loadProjectJSON,
     buildProjectJSON: buildProjectJSON,
     select: Zn,
-    selectAll: () => Zn(sa()),
+    selectAll: () => Zn(sa().filter(isObjectEditable)),
     group: cc,
     ungroup: () => uc(),
     setHole: (n, e) => Q1(n, e),
@@ -220,6 +221,10 @@ window.app = {
     undo: gg,
     redo: Uf,
     exportSTLBytes: _g,
+    checkForPrint: () => checkPrintModel(),
     objects: sa,
+    renameObject: renameObject,
+    setObjectVisible: (o, visible) => changeObjectState(o, { visible: !!visible }),
+    setObjectLocked: (o, locked) => changeObjectState(o, { locked: !!locked }),
     THREE: Bm
 };
