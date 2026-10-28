@@ -3,6 +3,8 @@ var DRAFT_KEY = "yescoding3d-draft";
 var draftTimer = 0;
 
 function clearDraft() {
+  clearTimeout(draftTimer);
+  draftTimer = 0;
   try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
 }
 

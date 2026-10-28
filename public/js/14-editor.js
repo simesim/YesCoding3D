@@ -2,6 +2,7 @@
 // Массив дублекатов 
 
 function openArrayPanel() {
+    if (!canEditSelection()) return;
     if (!ot.length) {
         ki("Сначала выдели фигуру", !0);
         return;
@@ -18,6 +19,7 @@ function closeArrayPanel() {
 }
 
 function applyArray() {
+    if (!canEditSelection()) return;
     if (!ot.length) {
         ki("Нет выделения", !0);
         return;
@@ -39,27 +41,42 @@ function applyArray() {
     });
     cx /= src.length;
     cz /= src.length;
+    var before = src.map(function(o) { o.updateMatrix(); return o.matrix.clone(); });
     for (var i = 1; i < count; i++) {
+        var ang = i / count * Math.PI * 2;
         src.forEach(function(o) {
             var c = $1(o);
             if (mode === "circle") {
-                var ang = i / count * Math.PI * 2;
-                var dx = o.position.x - cx,
-                    dz = o.position.z - cz;
-                var rad = Math.hypot(dx, dz);
-                if (rad < 0.01) rad = step;
-                var a0 = Math.atan2(dz, dx);
-                c.position.x = cx + Math.cos(a0 + ang) * rad;
-                c.position.z = cz + Math.sin(a0 + ang) * rad;
-                c.rotation.y = o.rotation.y - ang;
+                var dx = o.position.x - cx + step;
+                var dz = o.position.z - cz;
+                c.position.x = cx + dx * Math.cos(ang) + dz * Math.sin(ang);
+                c.position.z = cz - dx * Math.sin(ang) + dz * Math.cos(ang);
+                c.rotateOnWorldAxis(new E(0, 1, 0), ang);
             } else {
                 c.position.x = o.position.x + step * i;
             }
             extras.push(c);
         });
     }
-    Hi(aa([], extras));
-    Zn(src.concat(extras));
+    var after = before.map(function(m) {
+        var next = m.clone();
+        if (mode === "circle") next.elements[12] += step;
+        return next;
+    });
+    var move = vg(src, before, after);
+    var add = aa([], extras);
+    // Перемещение исходника и копии — одно отменяемое действие.
+    Hi({
+        apply: function() {
+            move.apply();
+            add.apply();
+            Zn(src.concat(extras));
+        },
+        revert: function() {
+            add.revert();
+            move.revert();
+        }
+    });
     closeArrayPanel();
     ki("Массив: " + (extras.length + src.length) + " шт.");
 }

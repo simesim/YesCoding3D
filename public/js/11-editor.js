@@ -23,6 +23,7 @@ function hg(n, e) {
 
 function fg(n, e, t) {
     n.addEventListener("change", () => {
+        if (!isObjectEditable(e)) { ls(); return; }
         e.updateMatrix();
         let i = [e.matrix.clone()];
         t(), e.updateMatrix();
@@ -46,9 +47,10 @@ function A4() {
 }
 
 function hc() {
+    var editable = canEditSelection();
     Mt("btn-undo").disabled = !Vf.length, Mt("btn-redo").disabled = !Hf.length, Mt("btn-dup")
-        .disabled = Mt("btn-del").disabled = !ot.length, Mt("btn-group").disabled = ot.length < 2, Mt(
-            "btn-ungroup").disabled = !(ot.length === 1 && ot[0].userData.kind === "group")
+        .disabled = Mt("btn-del").disabled = !editable, Mt("btn-group").disabled = !editable || ot.length < 2, Mt(
+            "btn-ungroup").disabled = !(editable && ot.length === 1 && ot[0].userData.kind === "group")
 }
 /*   Режим трансформации: translate | rotate | scale (TransformControls — только один за раз)
 	     Одна кнопка mode-cycle + Tab переключают по кругу; G/R/S — сразу.
@@ -119,6 +121,13 @@ document.querySelectorAll(".chip").forEach(n => n.onclick = () => {
     }
 });
 addEventListener("keydown", n => {
+    if (ycIsModalOpen()) {
+        if (n.code === "Escape") {
+            n.preventDefault();
+            closePrintCheck() || closeBezierEditor() || closeMirrorPanel() || closeArrayPanel();
+        }
+        return;
+    }
     let e = n.target.tagName;
     if (e === "INPUT" || e === "TEXTAREA") return;
     let t = n.ctrlKey || n.metaKey;
@@ -126,7 +135,7 @@ addEventListener("keydown", n => {
         "KeyY" ? (n.preventDefault(), Uf()) : t && n.code === "KeyD" ? (n.preventDefault(), yg()) :
         t && n.code === "KeyG" ? (n.preventDefault(), n.shiftKey ? uc() : cc()) : t && n.code ===
         "KeyE" ? (n.preventDefault(), _g()) : t && n.code === "KeyS" ? (n.preventDefault(),
-            saveProjectJSON()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa())) : n.code ===
+            saveProjectJSON()) : t && n.code === "KeyA" ? (n.preventDefault(), Zn(sa().filter(isObjectEditable))) : n.code ===
         "Tab" ? (n.preventDefault(), cycleMode()) : n.code === "KeyG" ? Mo("translate") : n.code ===
         "KeyR" ? Mo("rotate") : n.code === "KeyS" ? Mo("scale") : n.code === "KeyD" ? J1() : n
         .code === "KeyB" ? (n.preventDefault(), setBoxSelect(!boxSelectMode)) : n.code === "KeyL" ?

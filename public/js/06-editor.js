@@ -1,8 +1,10 @@
 // @ts-nocheck
 function xg() {
+  if (!canEditSelection()) return;
   ot.length && (Hi(aa([...ot], [])), ki("\u0423\u0434\u0430\u043B\u0435\u043D\u043E"))
 } /*   Дублировать выделенные   */
 function yg() {
+  if (!canEditSelection()) return;
   if (!ot.length) return;
   let n = ot.map($1);
   n.forEach(e => {
@@ -11,6 +13,7 @@ function yg() {
 }
 
 function J1() {
+  if (!canEditSelection()) return;
   if (!ot.length) return;
   let n = ot.map(t => (t.updateMatrix(), t.matrix.clone()));
   ot.forEach(t => {
@@ -24,6 +27,7 @@ var Bf = null;
 /*   Группировка (boolean union + вычитание отверстий)   */
 /*   Группировка: boolean union тел + вычитание отверстий (CSG из бандла)   */
 function cc() {
+  if (!canEditSelection()) return;
   let n = [...ot];
   if (n.length < 2) {
     ki("\u0412\u044B\u0434\u0435\u043B\u0438 \u0445\u043E\u0442\u044F \u0431\u044B \u0434\u0432\u0430 \u043E\u0431\u044A\u0435\u043A\u0442\u0430",
@@ -65,17 +69,19 @@ function cc() {
     "\u0421\u0433\u0440\u0443\u043F\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u043E")
 } /*   Разгруппировать: вернуть members на сцену   */
 function uc(n) {
+  if (!canEditSelection()) return null;
   if (ot.length !== 1 || ot[0].userData.kind !== "group") return n || ki(
     "\u0412\u044B\u0434\u0435\u043B\u0438 \u043E\u0434\u043D\u0443 \u0433\u0440\u0443\u043F\u043F\u0443",
     !0), null;
   let e = ot[0];
   e.updateMatrix();
   let t = e.matrix.clone().multiply(e.userData.baseMatrix.clone().invert()),
-    i = e.userData.members;
+    // Отдельные экземпляры: отмена не должна менять members исходной группы.
+    i = e.userData.members.map($1);
   return i.forEach(r => {
     r.updateMatrix(), r.matrix.premultiply(t), r.matrix.decompose(r.position, r.quaternion, r
       .scale)
-  }), e.userData.baseMatrix = e.matrix.clone(), Hi(aa([e], i)), i
+  }), Hi(aa([e], i)), i
 }
 
 function y4(n) {
@@ -97,8 +103,9 @@ function b4() {
 }
 
 function Q1(n, e) {
-  let t = Array.isArray(n) ? n : [n],
-    i = t.map(ra),
+  let t = Array.isArray(n) ? n : [n];
+  if (!t.length || !t.every(isObjectEditable)) return;
+  let i = t.map(ra),
     r = t.map(s => ({
       ...ra(s),
       isHole: e
@@ -132,13 +139,17 @@ function serializeObj(n) {
     rotation: [n.rotation.x, n.rotation.y, n.rotation.z],
     scale: [n.scale.x, n.scale.y, n.scale.z],
     color: n.userData._mat.color.getHex(),
-    isHole: !!n.userData.isHole
+    isHole: !!n.userData.isHole,
+    objectName: getObjectName(n),
+    visible: n.visible,
+    locked: !!n.userData.locked
   };
   if (n.userData.kind === "group") {
     return Object.assign({
       kind: "group"
     }, base, {
-      members: (n.userData.members || []).map(serializeObj)
+      members: (n.userData.members || []).map(serializeObj),
+      baseMatrix: n.userData.baseMatrix.toArray()
     });
   }
   let def = n.userData.def || {};

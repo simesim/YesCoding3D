@@ -1,6 +1,6 @@
 // @ts-nocheck
 // правая панель
-function ls() {
+function renderInspector() {
     if (Si = null, !ot.length) {
         Pt.innerHTML =
             `<div class="insp-empty">\u041A\u043B\u0438\u043A\u043D\u0438 \u0444\u0438\u0433\u0443\u0440\u0443 \u0432 \u043F\u0430\u043D\u0435\u043B\u0438 \u0441\u043B\u0435\u0432\u0430, \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C \u0435\u0451 \u043D\u0430 \u043F\u043B\u043E\u0449\u0430\u0434\u043A\u0443.<br><br>
@@ -25,9 +25,13 @@ function ls() {
         t = n.userData.def;
     Pt.innerHTML = "";
     let i = document.createElement("div");
-    i.innerHTML =
-        `<div class="insp-title">${e ? "\u0413\u0440\u0443\u043F\u043F\u0430" : t.type === "text" ? `\u0422\u0435\u043A\u0441\u0442 \xAB${(t.params.text + "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]))}\xBB` : _r[t.type].name}</div>
-    <div class="insp-sub">${n.userData.isHole ? "\u043E\u0442\u0432\u0435\u0440\u0441\u0442\u0438\u0435" : "\u0444\u0438\u0433\u0443\u0440\u0430"}</div>`,
+    let title = document.createElement("div");
+    title.className = "insp-title";
+    title.textContent = getObjectName(n);
+    let subtitle = document.createElement("div");
+    subtitle.className = "insp-sub";
+    subtitle.textContent = n.userData.isHole ? "отверстие" : e ? "группа" : "фигура";
+    i.append(title, subtitle);
     Pt.appendChild(i);
   let r = mg(n),
     s = {
@@ -77,7 +81,7 @@ function ls() {
       Hi(Ff([n], x, g))
     }), d.appendChild(m), Pt.appendChild(d)
   }
-  let a = e ? {} : _r[t.type].params || {},
+  let a = e ? {} : (_r[t.type] ? _r[t.type].params : {}) || {},
     o = Object.keys(a);
   if (o.length) {
     Pt.appendChild(bo(
@@ -131,6 +135,7 @@ function ls() {
 }
 
 function k1(n, e) {
+  if (!n.length || !n.every(isObjectEditable)) return;
   let t = n.map(ra),
     i = n.map(r => ({
       ...ra(r),
